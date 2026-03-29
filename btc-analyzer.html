@@ -238,6 +238,33 @@ a { color: var(--amber); }
 .claude-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .claude-status  { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 6px; }
 
+/* ── HISTORIQUE ── */
+.hist-wrap {
+  margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px;
+}
+.hist-title {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--mono); margin-bottom: 7px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hist-list { display: flex; flex-direction: column; gap: 4px; }
+.hist-entry {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 9px; border-radius: 7px; cursor: pointer;
+  border: 1px solid transparent; background: var(--bg3);
+  transition: all 0.12s; font-family: var(--mono);
+}
+.hist-entry:hover { border-color: var(--border2); background: var(--bg4); }
+.hist-entry.active { border-color: var(--amber); background: rgba(245,158,11,0.06); }
+.hist-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
+.hist-entry.active .hist-dot { background: var(--amber); box-shadow: 0 0 5px rgba(245,158,11,0.5); }
+.hist-time  { font-size: 10px; color: var(--muted); min-width: 72px; }
+.hist-price { font-size: 11px; font-weight: 700; color: var(--text); min-width: 68px; }
+.hist-rsi   { font-size: 10px; min-width: 52px; }
+.hist-tf    { font-size: 9px; color: var(--muted); padding: 1px 5px; border-radius: 4px; background: var(--bg4); }
+.hist-clear { font-size: 9px; color: var(--muted); cursor: pointer; font-family: var(--mono); }
+.hist-clear:hover { color: var(--red); }
+
 /* ── VOL BAR ── */
 .vol-wrap { flex: 1; height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
 .vol-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
@@ -279,6 +306,46 @@ canvas  { display: block; border-radius: 4px; }
   margin-left: 4px;
 }
 
+/* ── MACRO CALENDAR ── */
+.macro-wrap { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+.macro-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:13px 14px; }
+.ev-row {
+  display:flex; align-items:center; gap:9px;
+  padding:7px 9px; border-radius:7px; margin-bottom:5px;
+  background:var(--bg3); border:1px solid var(--border);
+  transition: border-color 0.12s;
+}
+.ev-row:last-child { margin-bottom:0; }
+.ev-row.ev-urgent { border-color:rgba(239,68,68,0.45); background:rgba(239,68,68,0.05); }
+.ev-row.ev-soon   { border-color:rgba(245,158,11,0.35); background:rgba(245,158,11,0.04); }
+.ev-badge {
+  font-size:8px; font-weight:700; padding:2px 5px; border-radius:4px;
+  min-width:38px; text-align:center; flex-shrink:0; font-family:var(--mono);
+}
+.b-fomc { background:rgba(167,139,250,0.18); color:#a78bfa; }
+.b-cpi  { background:rgba(96,165,250,0.18);  color:#60a5fa; }
+.b-nfp  { background:rgba(16,185,129,0.18);  color:#10b981; }
+.b-pce  { background:rgba(245,158,11,0.18);  color:#f59e0b; }
+.ev-info { flex:1; min-width:0; }
+.ev-name { font-size:11px; color:var(--text); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ev-desc { font-size:9px; color:var(--muted); margin-top:1px; font-family:var(--mono); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ev-right { text-align:right; flex-shrink:0; }
+.ev-cd  { font-size:11px; font-weight:700; font-family:var(--mono); }
+.ev-imp { display:flex; gap:2px; margin-top:3px; justify-content:flex-end; }
+.imp-on  { width:5px; height:5px; border-radius:50%; background:var(--red); display:inline-block; }
+.imp-mid { width:5px; height:5px; border-radius:50%; background:var(--amber); display:inline-block; }
+.imp-off { width:5px; height:5px; border-radius:50%; background:var(--bg4); display:inline-block; }
+.corr-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+.corr-item { background:var(--bg3); border-radius:7px; padding:8px 10px; border:1px solid var(--border); }
+.corr-name { font-size:9px; color:var(--muted); font-family:var(--mono); margin-bottom:3px; }
+.corr-val  { font-size:16px; font-weight:700; font-family:var(--mono); }
+.corr-sub  { font-size:9px; color:var(--muted); margin-top:2px; font-family:var(--mono); }
+.dxy-main  { display:flex; align-items:center; justify-content:space-between; }
+.dxy-big   { font-size:22px; font-weight:700; font-family:var(--mono); }
+.dxy-chg   { font-size:11px; font-family:var(--mono); margin-top:2px; }
+.dxy-note  { font-size:9px; color:var(--muted); font-family:var(--mono); margin-top:4px; }
+@media (max-width:900px) { .macro-wrap { grid-template-columns:1fr; } }
+
 /* ── DISCLAIMER ── */
 .footer { text-align: center; padding: 16px 0; color: var(--muted); font-size: 10px; font-family: var(--mono); border-top: 1px solid var(--border); margin-top: 8px; }
 
@@ -287,6 +354,8 @@ canvas  { display: block; border-radius: 4px; }
   .g4 { grid-template-columns: 1fr 1fr; }
   .g2, .g3 { grid-template-columns: 1fr; }
   .header-price .price-val { font-size: 20px; }
+  #claude-grid { grid-template-columns: 1fr !important; }
+  #hist-wrap { border-left: none !important; padding-left: 0 !important; border-top: 1px solid var(--border) !important; padding-top: 10px !important; }
 }
 @media (max-width: 500px) {
   .main { padding: 14px 14px; }
@@ -318,24 +387,13 @@ canvas  { display: block; border-radius: 4px; }
       <div class="live-dot"></div>
       <span id="ws-label">CONNECTING</span>
     </div>
-    <button class="btn btn-sm" onclick="refreshAll()">↻ Refresh</button>
+    <button class="btn btn-sm" id="btn-refresh-kpi" onclick="refreshKPIs()">↻ Données</button>
   </div>
 </div>
 
 <!-- ═══════════════════════════ MAIN ══════════════════════════════ -->
 <div class="main">
 
-  <!-- API KEY -->
-  <div class="setup-banner">
-    <span class="setup-label">🔑 Clé API Claude</span>
-    <input type="password" class="setup-input" id="key-input" placeholder="sk-ant-api03-…" />
-    <button class="btn btn-amber btn-sm" onclick="saveKey()">Sauvegarder</button>
-    <div class="api-status">
-      <div class="s-dot" id="key-dot" style="background:var(--red);"></div>
-      <span id="key-lbl" class="mono" style="font-size:10px;">Non configurée</span>
-    </div>
-    <span class="ts" style="margin-left:auto;">⚠ La clé reste locale — ne partagez jamais ce fichier avec la clé dedans</span>
-  </div>
 
   <!-- ALERT ZONE (dynamique) -->
   <div id="alert-zone"></div>
@@ -383,25 +441,105 @@ canvas  { display: block; border-radius: 4px; }
 
   </div>
 
-  <!-- ── CHART + LEVELS ── -->
-  <div class="g2">
+  <!-- ── MACRO CALENDRIER + CORRÉLATIONS ── -->
+  <div class="macro-wrap">
 
-    <!-- Sparkline + Volume -->
-    <div class="card">
-      <div class="card-label" id="spark-label" style="margin-bottom:10px;">Prix BTC — 60 bougies 4H · Binance</div>
-      <canvas id="spark" height="170" style="width:100%; height:170px;"></canvas>
-      <div style="margin-top:14px;">
-        <div class="card-label" id="vol-label">Volume courant vs Moyenne 20 périodes 4H</div>
-        <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
-          <span class="card-sub" id="vol-now" style="min-width:70px;">—</span>
-          <div class="vol-wrap"><div class="vol-fill" id="vol-bar" style="width:40%; background:var(--amber);"></div></div>
-          <span class="card-sub" id="vol-ratio" style="min-width:32px;">×—</span>
-        </div>
-        <div class="card-sub" id="vol-sig" style="margin-top:4px;">—</div>
+    <!-- Calendrier événements -->
+    <div class="macro-card">
+      <div class="section-title" style="margin-bottom:10px;">Calendrier macro — impact BTC</div>
+      <div id="macro-calendar">
+        <div class="ev-row"><div class="ev-badge b-fomc">FOMC</div><div class="ev-info"><div class="ev-name">Chargement…</div></div></div>
       </div>
     </div>
 
-    <!-- Levels -->
+    <!-- DXY + corrélations -->
+    <div class="macro-card">
+      <div class="section-title" style="margin-bottom:10px;">Corrélations & DXY</div>
+      <div class="dxy-main">
+        <div>
+          <div class="card-label">Dollar Index — ETF UUP</div>
+          <div class="dxy-big" id="dxy-val">—</div>
+          <div class="dxy-chg" id="dxy-chg">—</div>
+          <div class="dxy-note">Corrélation inverse · DXY ↑ = pression baissière BTC</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="card-label">Corrél. BTC/DXY</div>
+          <div style="font-size:20px; font-weight:700; font-family:var(--mono);" id="dxy-corr">−0.72</div>
+          <div class="card-sub" id="dxy-corr-lbl" style="color:var(--red);">Forte inverse</div>
+        </div>
+      </div>
+      <div class="corr-grid">
+        <div class="corr-item">
+          <div class="corr-name">SP500 — ETF SPY</div>
+          <div class="corr-val" id="sp500-val">—</div>
+          <div class="corr-sub" id="sp500-chg">—</div>
+        </div>
+        <div class="corr-item">
+          <div class="corr-name">Nasdaq 100 — ETF QQQ</div>
+          <div class="corr-val" id="nasdaq-val">—</div>
+          <div class="corr-sub" id="nasdaq-chg">—</div>
+        </div>
+        <div class="corr-item">
+          <div class="corr-name">BTC/SP500 corrél.</div>
+          <div class="corr-val" style="color:var(--amber);">+0.55</div>
+          <div class="corr-sub">Risk-on modéré</div>
+        </div>
+        <div class="corr-item">
+          <div class="corr-name">Or (XAU/USD)</div>
+          <div class="corr-val" id="gold-val">—</div>
+          <div class="corr-sub" id="gold-chg">—</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── GRAPHIQUE PLEINE LARGEUR ── -->
+  <div class="card" style="padding:14px 14px 10px; margin-bottom:16px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+      <div class="card-label" id="spark-label" style="margin-bottom:0;">Prix BTC — 60 bougies 4H · Binance</div>
+      <div style="display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:10px; color:var(--muted);">
+        <span id="chart-ema-legend" style="display:flex; gap:8px;">
+          <span><span style="display:inline-block;width:18px;height:1px;background:rgba(96,165,250,0.7);vertical-align:middle;margin-right:3px;border-top:1px dashed rgba(96,165,250,0.7);"></span>EMA200</span>
+          <span><span style="display:inline-block;width:18px;height:1px;background:rgba(167,139,250,0.7);vertical-align:middle;margin-right:3px;border-top:1px dashed rgba(167,139,250,0.7);"></span>EMA50</span>
+        </span>
+        <span style="display:flex; align-items:center; gap:8px;">
+          <span id="vol-now" style="font-size:10px;">—</span>
+          <span id="vol-ratio" style="font-size:10px; color:var(--amber);">×—</span>
+          <span id="vol-sig" style="font-size:10px;">—</span>
+        </span>
+      </div>
+    </div>
+    <!-- Canvas wrapper -->
+    <div style="position:relative;">
+      <div id="chart-tooltip" style="
+        display:none; position:absolute; z-index:50;
+        background:var(--bg4); border:1px solid var(--border2);
+        border-radius:8px; padding:8px 11px;
+        font-family:var(--mono); font-size:11px; line-height:1.7;
+        pointer-events:none; white-space:nowrap;
+      "></div>
+      <canvas id="spark" style="width:100%; display:block; cursor:crosshair;"></canvas>
+      <div id="chart-live-price" style="
+        position:absolute; right:0; top:50%;
+        transform:translateY(-50%);
+        background:var(--amber); color:#000;
+        font-family:var(--mono); font-size:9px; font-weight:700;
+        padding:2px 5px; border-radius:4px 0 0 4px;
+        pointer-events:none; white-space:nowrap;
+      "></div>
+    </div>
+    <!-- Barre volume compacte -->
+    <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+      <div class="card-label" id="vol-label" style="margin-bottom:0; white-space:nowrap;">Volume vs moy. 20p</div>
+      <div class="vol-wrap" style="flex:1;"><div class="vol-fill" id="vol-bar" style="width:40%; background:var(--amber);"></div></div>
+    </div>
+  </div>
+
+  <!-- ── S&R + CONFLUENCE côte à côte ── -->
+  <div class="g2">
+
+    <!-- Supports & Résistances -->
     <div class="card">
       <div class="card-label" style="margin-bottom:10px;">Supports & Résistances — Pivot Points + EMA</div>
       <div id="levels">
@@ -409,12 +547,7 @@ canvas  { display: block; border-radius: 4px; }
       </div>
     </div>
 
-  </div>
-
-  <!-- ── SIGNALS + CLAUDE ── -->
-  <div class="g2">
-
-    <!-- Signal scoring -->
+    <!-- Grille de confluence -->
     <div class="card">
       <div class="card-label" style="margin-bottom:10px;">Grille de confluence — Score d'entrée</div>
       <div id="sigs"></div>
@@ -425,26 +558,65 @@ canvas  { display: block; border-radius: 4px; }
       </div>
     </div>
 
-    <!-- Claude -->
-    <div class="card">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-        <div class="card-label" style="margin-bottom:0;">Analyse Claude AI — Basée sur données live</div>
-        <span style="font-size:10px; color:var(--muted); font-family:var(--mono);">↻ Refresh pour générer</span>
-      </div>
-      <div class="claude-actions" style="margin-bottom:10px;">
+  </div>
+
+  <!-- ── CLAUDE PLEINE LARGEUR ── -->
+  <div class="card" style="margin-bottom:16px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+      <div class="card-label" style="margin-bottom:0;">Analyse Claude AI — Basée sur données live</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; align-items:center;">
+      <!-- Onglets -->
+      <div class="claude-actions" style="flex:1;">
         <button class="btn btn-amber btn-sm" id="btn-entry"     onclick="switchTab('entry')">📊 Points d'entrée</button>
         <button class="btn btn-sm"           id="btn-risk"      onclick="switchTab('risk')">🛡 Gestion du risque</button>
         <button class="btn btn-sm"           id="btn-scenarios" onclick="switchTab('scenarios')">🎯 Scénarios</button>
       </div>
-      <div class="claude-out" id="claude-out">Les 3 analyses sont générées en cliquant sur ↻ Refresh (en haut à droite).\n\nLes boutons ci-dessus permettent de naviguer entre les analyses une fois générées.</div>
-      <div class="signal-reason" id="signal-reason"></div>
-      <div class="claude-status" id="claude-st"></div>
+      <!-- Bouton Analyser -->
+      <button class="btn btn-amber btn-sm" id="btn-analyze" onclick="runAnalysis()" style="white-space:nowrap; flex-shrink:0;">
+        ✦ Analyser
+      </button>
     </div>
+    <!-- Texte analyse + historique côte à côte sur grand écran -->
+    <div style="display:grid; grid-template-columns:1fr 260px; gap:16px;" id="claude-grid">
+      <div>
+        <div class="claude-out" id="claude-out">Les 3 analyses sont générées en cliquant sur ↻ Refresh (en haut à droite). Les onglets permettent de naviguer entre les analyses une fois générées.</div>
+        <div class="signal-reason" id="signal-reason"></div>
+        <div class="claude-status" id="claude-st"></div>
+      </div>
+      <!-- Historique intégré à droite -->
+      <div class="hist-wrap" id="hist-wrap" style="display:none; margin-top:0; border-top:none; padding-top:0; border-left:1px solid var(--border); padding-left:14px;">
+        <div class="hist-title">
+          <span>Historique</span>
+          <span class="hist-clear" onclick="clearHistory()">Effacer</span>
+        </div>
+        <div class="hist-list" id="hist-list"></div>
+      </div>
+    </div>
+  </div>
 
+  <!-- ── CONFIGURATION API KEYS ── -->
+  <div class="setup-banner" style="margin-top:8px;">
+    <span class="setup-label">🔑 Claude</span>
+    <input type="password" class="setup-input" id="key-input" placeholder="sk-ant-api03-…" style="min-width:180px; flex:1;" />
+    <button class="btn btn-amber btn-sm" onclick="saveKey()">Sauvegarder</button>
+    <div class="api-status">
+      <div class="s-dot" id="key-dot" style="background:var(--red);"></div>
+      <span id="key-lbl" class="mono" style="font-size:10px;">Non configurée</span>
+    </div>
+    <span style="width:1px; height:20px; background:var(--border2); flex-shrink:0; margin:0 6px;"></span>
+    <span class="setup-label">📈 Twelve Data</span>
+    <input type="password" class="setup-input" id="td-input" placeholder="Clé twelvedata.com…" style="min-width:180px; flex:1;" />
+    <button class="btn btn-sm" onclick="saveTDKey()" style="white-space:nowrap;">Sauvegarder</button>
+    <div class="api-status">
+      <div class="s-dot" id="td-dot" style="background:var(--red);"></div>
+      <span id="td-lbl" class="mono" style="font-size:10px;">Non configurée</span>
+    </div>
+    <span class="ts" style="margin-left:auto; white-space:nowrap;">⚠ Clés stockées localement — ne pas partager ce fichier</span>
   </div>
 
   <div class="footer">
-    Données : Binance Public API (4H + Daily) · Alternative.me · Claude API (Anthropic) &nbsp;|&nbsp; Pas un conseil financier — DYOR &nbsp;|&nbsp; MàJ auto toutes les 60s
+    Données : Binance · Alternative.me · Twelve Data · Claude API &nbsp;|&nbsp; Pas un conseil financier — DYOR &nbsp;|&nbsp; MàJ auto toutes les 60s
   </div>
 
 </div><!-- /main -->
@@ -464,6 +636,8 @@ const S = {
   lastClaudeType: null,
   activeTab: 'entry',                          // onglet actif
   claudeCache: { entry: null, risk: null, scenarios: null }, // cache des 3 analyses
+  macro: { dxy: null, sp500: null, nasdaq: null, gold: null },
+  tdKey: localStorage.getItem('btc_td_key') || '',
 };
 let ws = null;
 
@@ -488,6 +662,24 @@ if (S.key) {
   $('key-dot').style.background = 'var(--green)';
   $('key-lbl').textContent = 'Configurée ✓';
   $('key-input').placeholder = '••••••••••••••••••';
+}
+
+function saveTDKey() {
+  const v = $('td-input').value.trim();
+  if (!v) return;
+  S.tdKey = v;
+  localStorage.setItem('btc_td_key', v);
+  $('td-dot').style.background = 'var(--green)';
+  $('td-lbl').textContent = 'Configurée ✓';
+  $('td-input').value = '';
+  $('td-input').placeholder = '••••••••••••••••••';
+  // Charger les données macro immédiatement
+  fetchMacro().then(renderMacro);
+}
+if (S.tdKey) {
+  $('td-dot').style.background = 'var(--green)';
+  $('td-lbl').textContent = 'Configurée ✓';
+  $('td-input').placeholder = '••••••••••••••••••';
 }
 
 // ──────────────── CALCULATIONS ───────────────────────────────────
@@ -524,6 +716,148 @@ function calcPivots(h, l, c) {
   const P = (h + l + c) / 3;
   return { P, R1: 2*P-l, R2: P+(h-l), R3: h+2*(P-l), S1: 2*P-h, S2: P-(h-l), S3: l-2*(h-P) };
 }
+
+// ──────────────── MACRO CALENDRIER ───────────────────────────────
+// Dates fixes connues à l'avance — à mettre à jour trimestriellement
+const MACRO_EVENTS = [
+  { type:'FOMC', name:'Décision taux Fed',     date:'2026-04-29', hour:19, impact:3, prev:'4.50%', cons:'maintien 4.50%' },
+  { type:'CPI',  name:'Inflation US (CPI)',     date:'2026-04-10', hour:13, impact:2, prev:'+2.8%', cons:'2.7% prév.' },
+  { type:'NFP',  name:'Emploi US (NFP)',        date:'2026-04-03', hour:13, impact:2, prev:'+228k', cons:'+185k prév.' },
+  { type:'FOMC', name:'Minutes Fed (Mars)',     date:'2026-04-08', hour:19, impact:2, prev:'',      cons:'Compte-rendu réunion Mars' },
+  { type:'PCE',  name:'PCE Inflation (Core)',   date:'2026-04-30', hour:13, impact:2, prev:'+2.8%', cons:'2.6% prév.' },
+  { type:'CPI',  name:'Inflation US (CPI Mai)', date:'2026-05-12', hour:13, impact:2, prev:'',      cons:'' },
+  { type:'FOMC', name:'Décision taux Fed',      date:'2026-06-10', hour:19, impact:3, prev:'',      cons:'' },
+];
+
+async function fetchMacro() {
+  if (!S.tdKey) return;
+
+  const fetchTD = async symbol => {
+    try {
+      const url = `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&apikey=${S.tdKey}`;
+      const r   = await fetch(url);
+      const d   = await r.json();
+      if (d.status === 'error' || !d.close) return null;
+      return {
+        price: parseFloat(d.close),
+        chg:   parseFloat(d.percent_change) || 0,
+      };
+    } catch { return null; }
+  };
+
+  // ETFs disponibles sur plan gratuit Twelve Data
+  // SPY = S&P 500 ETF · QQQ = Nasdaq 100 ETF · UUP = Dollar Index ETF · XAU/USD = Or forex
+  const dxy    = await fetchTD('UUP');       // Dollar Index ETF
+  const sp500  = await fetchTD('SPY');       // S&P 500 ETF
+  const nasdaq = await fetchTD('QQQ');       // Nasdaq 100 ETF
+  const gold   = await fetchTD('XAU/USD');   // Or forex (déjà fonctionnel)
+
+  S.macro = { dxy, sp500, nasdaq, gold };
+}
+
+function renderMacro() {
+  const { dxy, sp500, nasdaq, gold } = S.macro;
+  const fmtVal = (v, dec=2) => v?.price != null ? v.price.toLocaleString('fr-FR', {minimumFractionDigits:dec, maximumFractionDigits:dec}) : '—';
+  const fmtChg = v => {
+    if (!v || v.chg == null) return '—';
+    const c = v.chg.toFixed(2);
+    return (v.chg >= 0 ? '+' : '') + c + '%';
+  };
+  const chgColor = v => !v ? 'var(--muted)' : v.chg >= 0 ? 'var(--green)' : 'var(--red)';
+
+  // DXY
+  if (dxy) {
+    $('dxy-val').textContent = fmtVal(dxy);
+    $('dxy-val').style.color = dxy.chg >= 0 ? 'var(--red)' : 'var(--green)';
+    $('dxy-chg').textContent = fmtChg(dxy);
+    $('dxy-chg').style.color = dxy.chg >= 0 ? 'var(--red)' : 'var(--green)';
+  } else {
+    $('dxy-val').textContent = '—';
+    $('dxy-val').style.color = 'var(--muted)';
+    $('dxy-chg').textContent = S.tdKey ? 'Cliquez ↻ Données' : 'Clé Twelve Data requise';
+    $('dxy-chg').style.color = 'var(--muted)';
+  }
+
+  // SP500
+  $('sp500-val').textContent = fmtVal(sp500, 0);
+  $('sp500-val').style.color = chgColor(sp500);
+  $('sp500-chg').textContent = fmtChg(sp500);
+  $('sp500-chg').style.color = chgColor(sp500);
+
+  // Nasdaq
+  $('nasdaq-val').textContent = fmtVal(nasdaq, 0);
+  $('nasdaq-val').style.color = chgColor(nasdaq);
+  $('nasdaq-chg').textContent = fmtChg(nasdaq);
+  $('nasdaq-chg').style.color = chgColor(nasdaq);
+
+  // Or
+  $('gold-val').textContent = '$' + fmtVal(gold, 0);
+  $('gold-val').style.color = chgColor(gold);
+  $('gold-chg').textContent = fmtChg(gold);
+  $('gold-chg').style.color = chgColor(gold);
+}
+
+function renderCalendar() {
+  const now = new Date();
+  // Trier par date la plus proche
+  const events = MACRO_EVENTS.map(e => {
+    const dt = new Date(`${e.date}T${String(e.hour).padStart(2,'0')}:00:00`);
+    const diffMs = dt - now;
+    const diffH  = diffMs / 3600000;
+    const diffD  = Math.floor(diffMs / 86400000);
+    return { ...e, dt, diffMs, diffH, diffD };
+  })
+  .filter(e => e.diffMs > -3600000) // exclure passés depuis plus d'1h
+  .sort((a, b) => a.diffMs - b.diffMs)
+  .slice(0, 5);
+
+  const impactDots = (n) => [1,2,3].map(i =>
+    `<span class="${i <= n ? (n===3 ? 'imp-on' : 'imp-mid') : 'imp-off'}"></span>`
+  ).join('');
+
+  const cdText = (e) => {
+    if (e.diffH < 0) return 'En cours';
+    if (e.diffH < 24) {
+      const h = Math.floor(e.diffH);
+      const m = Math.floor((e.diffH - h) * 60);
+      return `${h}h ${m}m`;
+    }
+    return `J−${e.diffD}`;
+  };
+
+  const cdColor = (e) => {
+    if (e.diffH < 24) return 'var(--red)';
+    if (e.diffD  < 7)  return 'var(--amber)';
+    return 'var(--muted)';
+  };
+
+  const rowClass = (e) => {
+    if (e.diffH < 24)  return 'ev-row ev-urgent';
+    if (e.diffD  < 7)  return 'ev-row ev-soon';
+    return 'ev-row';
+  };
+
+  const dateLabel = (e) => {
+    return e.dt.toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit' }) +
+           ' ' + e.dt.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+  };
+
+  $('macro-calendar').innerHTML = events.map(e => `
+    <div class="${rowClass(e)}">
+      <div class="ev-badge b-${e.type.toLowerCase()}">${e.type}</div>
+      <div class="ev-info">
+        <div class="ev-name">${e.name}</div>
+        <div class="ev-desc">${e.cons || dateLabel(e)}</div>
+      </div>
+      <div class="ev-right">
+        <div class="ev-cd" style="color:${cdColor(e)};">${cdText(e)}</div>
+        <div class="ev-imp">${impactDots(e.impact)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// Mise à jour compte à rebours toutes les 60s (sans appel API)
+setInterval(renderCalendar, 60000);
 
 // ──────────────── BINANCE ────────────────────────────────────────
 function processKlines(raw) {
@@ -564,15 +898,26 @@ function switchTF(tf) {
   if (S.tf === tf) return;
   S.tf = tf;
   S.prevSig = null; // reset détection de changement
+
+  // Vider le cache Claude — les analyses 4H ne sont pas valides en Daily et vice versa
+  S.claudeCache = { entry: null, risk: null, scenarios: null };
+  $('claude-out').textContent = `Analyses vidées — le TF a changé (${tf === '4h' ? '4H' : 'Daily'}).\nCliquez ↻ Refresh pour générer les 3 analyses sur ce timeframe.`;
+  $('claude-st').textContent = '';
+  // Réinitialiser le style des onglets
+  ['entry','risk','scenarios'].forEach(t => {
+    const btn = $('btn-' + t);
+    if (btn) { btn.classList.remove('btn-amber','btn-alert'); }
+  });
+  $('btn-entry').classList.add('btn-amber');
+
   applyTF();
-  // UI
+  // UI labels
   $('tf-4h').classList.toggle('active', tf === '4h');
   $('tf-1d').classList.toggle('active', tf === '1d');
   const label = tf === '4h' ? 'Intraday · signaux sur quelques heures' : 'Swing · signaux sur plusieurs jours';
   $('tf-context').textContent = label;
-  // Mettre à jour les labels des cartes
   const tfLabel = tf === '4h' ? '4H' : 'Daily';
-  $('rsi-card-label').textContent   = `RSI 14 — ${tfLabel}`;
+  $('rsi-card-label').textContent    = `RSI 14 — ${tfLabel}`;
   $('ema200-card-label').textContent = `EMA 200 — ${tfLabel}`;
   $('ema50-card-label').textContent  = `EMA 50 — ${tfLabel}`;
   const sparkN = tf === '4h' ? '60 bougies 4H' : '30 jours (Daily)';
@@ -586,6 +931,8 @@ function switchTF(tf) {
   renderLevels();
   renderSignals();
   renderAlert();
+  // Charger l'historique du nouveau TF
+  renderHistory(loadHistory(), null);
 }
 
 async function fetchTicker() {
@@ -720,97 +1067,411 @@ function renderVolume() {
   }
 }
 
-// ──────────────── RENDER: SPARKLINE ──────────────────────────────
+// ──────────────── RENDER: CHART INTERACTIF ───────────────────────
+let chartState = { data: [], W: 0, pad: {}, priceH: 0, volH: 0, gap: 0 };
+
 function renderSparkline() {
   if (!S.klines.length) return;
   const canvas = $('spark');
+  const wrapper = canvas.parentElement;
   const dpr = window.devicePixelRatio || 1;
-  const W = canvas.parentElement.offsetWidth - 32;
-  const H = 170;
+  const W   = wrapper.offsetWidth;
+  const priceH = 180;
+  const volH   = 44;
+  const gap    = 6;
+  const H      = priceH + gap + volH;
+
   canvas.style.width  = W + 'px';
   canvas.style.height = H + 'px';
   canvas.width  = W * dpr;
   canvas.height = H * dpr;
+
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
 
   const nCandles = S.tf === '4h' ? 60 : 30;
   const data = S.klines.slice(-nCandles);
   const closes = data.map(k => k.c);
-  const maxP = Math.max(...data.map(k => k.h));
-  const minP = Math.min(...data.map(k => k.l));
-  const range = maxP - minP || 1;
-  const pad = { t: 12, b: 22, l: 8, r: 8 };
-  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  const vols   = data.map(k => k.v * k.c); // volume en USDT
+
+  const maxP  = Math.max(...data.map(k => k.h));
+  const minP  = Math.min(...data.map(k => k.l));
+  const rangeP = maxP - minP || 1;
+  const maxV  = Math.max(...vols);
+
+  const pad = { t: 14, b: 18, l: 4, r: 58 };
+  const cw  = W - pad.l - pad.r;
+
+  // Coordonnée X d'un index
   const X = i => pad.l + (i / (data.length - 1)) * cw;
-  const Y = p => pad.t + (1 - (p - minP) / range) * ch;
+  // Coordonnée Y prix
+  const Y = p => pad.t + (1 - (p - minP) / rangeP) * (priceH - pad.t - pad.b);
+  // Coordonnée Y volume (dans la zone volume)
+  const YV = v => priceH + gap + volH - (v / maxV) * volH * 0.92;
 
   ctx.clearRect(0, 0, W, H);
 
-  // Draw EMA lines if in range
-  [[S.ema200, 'rgba(96,165,250,0.45)', 'EMA200'], [S.ema50, 'rgba(167,139,250,0.45)', 'EMA50']].forEach(([ema, col, lbl]) => {
-    if (!ema || ema < minP || ema > maxP) return;
+  // ── EMA lines — affichées même hors plage (clippées au bord) ──
+  [[S.ema200, 'rgba(96,165,250,0.65)', '#60a5fa', 'EMA200'],
+   [S.ema50,  'rgba(167,139,250,0.65)', '#a78bfa', 'EMA50']].forEach(([ema, col, colSolid, lbl]) => {
+    if (!ema) return;
+    const inRange = ema >= minP * 0.97 && ema <= maxP * 1.03;
+    const ye = inRange
+      ? Y(ema)
+      : ema > maxP ? pad.t + 2           // au-dessus → coller en haut
+                   : priceH - pad.b - 2;  // en-dessous → coller en bas
+
+    // Ligne
     ctx.beginPath();
-    ctx.setLineDash([4, 4]);
+    ctx.setLineDash(inRange ? [5, 4] : [3, 3]);
     ctx.strokeStyle = col;
-    ctx.lineWidth = 1;
-    ctx.moveTo(pad.l, Y(ema));
-    ctx.lineTo(pad.l + cw, Y(ema));
+    ctx.lineWidth = inRange ? 1 : 0.8;
+    ctx.moveTo(pad.l, ye);
+    ctx.lineTo(pad.l + cw, ye);
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = col;
-    ctx.font = '9px Space Mono, monospace';
-    ctx.fillText(lbl, pad.l + 4, Y(ema) - 3);
+
+    // Label avec prix et distance si hors plage
+    const dist = S.price ? ((ema - S.price) / S.price * 100).toFixed(1) : null;
+    const distTxt = dist ? ` (${dist > 0 ? '+' : ''}${dist}%)` : '';
+    const labelTxt = inRange ? lbl : `${lbl} $${Math.round(ema/1000)}K${distTxt}`;
+
+    ctx.fillStyle = colSolid;
+    ctx.font = `${inRange ? 8 : 9}px Space Mono, monospace`;
+    ctx.textAlign = 'left';
+    // Fond semi-transparent pour lisibilité si hors plage
+    if (!inRange) {
+      const tw = ctx.measureText(labelTxt).width;
+      ctx.fillStyle = 'rgba(13,13,28,0.75)';
+      ctx.fillRect(pad.l + 3, ye - 10, tw + 6, 13);
+      ctx.fillStyle = colSolid;
+    }
+    ctx.fillText(labelTxt, pad.l + 4, ye - 2);
   });
 
-  // Area fill
+  // ── Area fill sous la ligne de prix ──
   const isUp = closes[closes.length - 1] >= closes[0];
-  const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + ch);
-  grad.addColorStop(0, isUp ? 'rgba(16,185,129,0.18)' : 'rgba(239,68,68,0.18)');
+  const lineColor = isUp ? '#10b981' : '#ef4444';
+  const grad = ctx.createLinearGradient(0, pad.t, 0, priceH - pad.b);
+  grad.addColorStop(0, isUp ? 'rgba(16,185,129,0.22)' : 'rgba(239,68,68,0.22)');
   grad.addColorStop(1, 'rgba(0,0,0,0)');
+
   ctx.beginPath();
   ctx.moveTo(X(0), Y(closes[0]));
   for (let i = 1; i < closes.length; i++) ctx.lineTo(X(i), Y(closes[i]));
-  ctx.lineTo(X(closes.length - 1), pad.t + ch);
-  ctx.lineTo(X(0), pad.t + ch);
+  ctx.lineTo(X(closes.length - 1), priceH - pad.b);
+  ctx.lineTo(X(0), priceH - pad.b);
   ctx.closePath();
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Line
+  // ── Ligne de prix ──
   ctx.beginPath();
-  ctx.strokeStyle = isUp ? '#10b981' : '#ef4444';
+  ctx.strokeStyle = lineColor;
   ctx.lineWidth = 1.8;
   ctx.lineJoin = 'round';
   ctx.moveTo(X(0), Y(closes[0]));
   for (let i = 1; i < closes.length; i++) ctx.lineTo(X(i), Y(closes[i]));
   ctx.stroke();
 
-  // Current dot
-  ctx.beginPath();
-  ctx.arc(X(closes.length - 1), Y(closes[closes.length - 1]), 4, 0, Math.PI * 2);
-  ctx.fillStyle = '#f59e0b';
-  ctx.fill();
+  // ── Histogramme de volume ──
+  const barW = Math.max(cw / data.length - 1.5, 1);
+  const avgVol = vols.reduce((a, b) => a + b, 0) / vols.length;
+  data.forEach((k, i) => {
+    const v = vols[i];
+    const x = X(i) - barW / 2;
+    const yTop = YV(v);
+    const barH = (priceH + gap + volH) - yTop;
+    const isSpike = v >= avgVol * 1.5;
+    ctx.fillStyle = isSpike
+      ? 'rgba(16,185,129,0.7)'
+      : k.c >= k.o
+        ? 'rgba(16,185,129,0.35)'
+        : 'rgba(239,68,68,0.35)';
+    ctx.fillRect(x, yTop, barW, barH);
+  });
 
-  // Price labels
-  ctx.fillStyle = 'rgba(90,90,122,0.9)';
+  // ── Séparateur prix / volume ──
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  ctx.moveTo(pad.l, priceH + gap / 2);
+  ctx.lineTo(pad.l + cw, priceH + gap / 2);
+  ctx.stroke();
+
+  // ── Labels prix (haut/bas) ──
+  ctx.fillStyle = 'rgba(90,90,122,0.85)';
   ctx.font = '9px Space Mono, monospace';
   ctx.textAlign = 'left';
-  ctx.fillText('$' + fmt(maxP), pad.l + 4, pad.t + 9);
-  ctx.fillText('$' + fmt(minP), pad.l + 4, pad.t + ch - 3);
+  ctx.fillText('$' + fmt(maxP), pad.l + 3, pad.t + 9);
+  ctx.fillText('$' + fmt(minP), pad.l + 3, priceH - pad.b - 2);
 
-  // Date labels
+  // ── Labels dates ──
   ctx.textAlign = 'center';
   const n = data.length - 1;
-  const labelIdxs = [0, Math.round(n/2), n];
-  labelIdxs.forEach(i => {
+  [0, Math.round(n / 3), Math.round(2 * n / 3), n].forEach(i => {
     if (!data[i]) return;
     const d = new Date(data[i].t);
     const lbl = S.tf === '4h'
       ? `${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}h`
       : `${d.getDate()}/${d.getMonth()+1}`;
-    ctx.fillText(lbl, X(i), H - 5);
+    ctx.fillStyle = 'rgba(90,90,122,0.7)';
+    ctx.fillText(lbl, X(i), H - 3);
   });
+
+  // ── Point live ──
+  const lx = X(data.length - 1);
+  const ly = Y(closes[closes.length - 1]);
+  ctx.beginPath();
+  ctx.arc(lx, ly, 4, 0, Math.PI * 2);
+  ctx.fillStyle = '#f59e0b';
+  ctx.fill();
+
+  // ── Prix live à droite ──
+  const liveEl = $('chart-live-price');
+  if (liveEl && S.price) {
+    liveEl.textContent = '$' + fmt(S.price);
+    // Positionner verticalement en fonction du prix actuel
+    const pricePct = 1 - (Math.min(Math.max(S.price, minP), maxP) - minP) / rangeP;
+    const topPct   = (pad.t + pricePct * (priceH - pad.t - pad.b)) / H * 100;
+    liveEl.style.top = topPct + '%';
+  }
+
+  // ── Badges historique d'analyses ──
+  const badges = drawHistoryBadges(ctx, data, X, Y, priceH, pad, minP, maxP);
+
+  // Sauvegarder l'état pour le tooltip + badges cliquables
+  chartState = { data, W, pad, priceH, volH, gap, H, X, Y, YV, vols, closes, minP, maxP, rangeP, maxV, avgVol, dpr, badges };
+}
+
+// ──────────────── BADGES HISTORIQUE SUR LE GRAPHIQUE ─────────────
+function drawHistoryBadges(ctx, data, X, Y, priceH, pad, minP, maxP) {
+  const hist = loadHistory();
+  if (!hist.length || !data.length) return [];
+
+  const badges = [];
+  const firstTs = data[0].t;
+  const lastTs  = data[data.length - 1].t;
+
+  hist.forEach(entry => {
+    const ts = entry.id; // timestamp ms de génération
+
+    // Hors plage visible → ignorer
+    if (ts < firstTs || ts > lastTs + 4 * 3600 * 1000) return;
+
+    // Trouver la bougie la plus proche
+    let closest = 0, minDist = Infinity;
+    data.forEach((k, i) => {
+      const d = Math.abs(k.t - ts);
+      if (d < minDist) { minDist = d; closest = i; }
+    });
+
+    const bx = X(closest);
+    const price = entry.price || data[closest].c;
+    const clampedPrice = Math.min(Math.max(price, minP), maxP);
+    const by = Y(clampedPrice);
+
+    // Couleur selon RSI
+    const rsi = entry.rsi;
+    const col = rsi != null && rsi < 30 ? '#10b981'
+              : rsi != null && rsi < 40 ? '#f59e0b'
+              : '#6b7280';
+    const colBg = rsi != null && rsi < 30 ? 'rgba(16,185,129,0.15)'
+                : rsi != null && rsi < 40 ? 'rgba(245,158,11,0.15)'
+                : 'rgba(107,114,128,0.15)';
+
+    // Ligne verticale pointillée du badge jusqu'au bas
+    ctx.beginPath();
+    ctx.setLineDash([2, 3]);
+    ctx.strokeStyle = col.replace(')', ',0.35)').replace('rgb', 'rgba');
+    ctx.lineWidth = 0.8;
+    ctx.moveTo(bx, by + 12);
+    ctx.lineTo(bx, priceH - pad.b);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Fond du badge
+    const bw = 22, bh = 14, br = 4;
+    const bLeft = bx - bw / 2;
+    const bTop  = by - bh - 4;
+    ctx.beginPath();
+    ctx.roundRect(bLeft, bTop, bw, bh, br);
+    ctx.fillStyle = colBg;
+    ctx.fill();
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    // Texte "AI"
+    ctx.fillStyle = col;
+    ctx.font = 'bold 8px Space Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('AI', bx, bTop + bh / 2);
+    ctx.textBaseline = 'alphabetic';
+
+    // Dot sur la ligne de prix
+    ctx.beginPath();
+    ctx.arc(bx, by, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = col;
+    ctx.fill();
+
+    // Stocker zone cliquable
+    badges.push({ x: bx, y: bTop, w: bw, h: bh + 8, entry, col });
+  });
+
+  return badges;
+}
+
+// ──────────────── CHART TOOLTIP (mouse events) ────────────────────
+function initChartTooltip() {
+  const canvas  = $('spark');
+  const tooltip = $('chart-tooltip');
+  if (!canvas || !tooltip) return;
+
+  function onMove(e) {
+    const { data, W, pad, priceH, X, vols, badges } = chartState;
+    if (!data || !data.length) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const mx   = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const my   = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+    // Vérifier survol d'un badge
+    const hoveredBadge = (badges || []).find(b =>
+      mx >= b.x - b.w/2 && mx <= b.x + b.w/2 && my >= b.y && my <= b.y + b.h
+    );
+
+    if (hoveredBadge) {
+      canvas.style.cursor = 'pointer';
+      const e2 = hoveredBadge.entry;
+      tooltip.innerHTML = `
+        <div style="color:${hoveredBadge.col};font-weight:700;margin-bottom:4px;">⬡ Analyse générée</div>
+        <div style="color:var(--muted);margin-bottom:3px;">${e2.ts}</div>
+        <div style="display:flex;gap:12px;">
+          <div><div style="color:var(--muted);font-size:9px;">PRIX</div><div style="color:var(--text);font-weight:700;">$${e2.price?.toLocaleString('fr-FR',{maximumFractionDigits:0})}</div></div>
+          <div><div style="color:var(--muted);font-size:9px;">RSI</div><div style="color:${hoveredBadge.col};font-weight:700;">${e2.rsi?.toFixed(1) ?? '—'}</div></div>
+          <div><div style="color:var(--muted);font-size:9px;">F&G</div><div style="color:var(--text);">${e2.fg ?? '—'}</div></div>
+        </div>
+        <div style="color:var(--muted);font-size:9px;margin-top:5px;">Cliquer pour charger l'analyse</div>`;
+      const tooltipW = 240;
+      let tx = mx + 14;
+      if (tx + tooltipW > rect.width) tx = mx - tooltipW - 10;
+      tooltip.style.left    = tx + 'px';
+      tooltip.style.top     = '8px';
+      tooltip.style.display = 'block';
+      return;
+    }
+
+    canvas.style.cursor = 'crosshair';
+
+    // Trouver l'index le plus proche
+    let closest = 0, minDist = Infinity;
+    data.forEach((_, i) => {
+      const d = Math.abs(X(i) - mx);
+      if (d < minDist) { minDist = d; closest = i; }
+    });
+
+    const k   = data[closest];
+    const vol = vols[closest];
+    const d   = new Date(k.t);
+    const dateLbl = S.tf === '4h'
+      ? `${d.toLocaleDateString('fr-FR')} ${String(d.getHours()).padStart(2,'0')}:00`
+      : d.toLocaleDateString('fr-FR');
+
+    const chg    = ((k.c - k.o) / k.o * 100);
+    const chgCol = chg >= 0 ? '#10b981' : '#ef4444';
+    const volFmt = vol >= 1e9
+      ? '$' + (vol/1e9).toFixed(2) + 'B'
+      : '$' + (vol/1e6).toFixed(0) + 'M';
+
+    tooltip.innerHTML = `
+      <div style="color:var(--muted);margin-bottom:3px;">${dateLbl}</div>
+      <div style="display:flex;gap:14px;">
+        <div>
+          <div style="color:var(--muted);font-size:9px;">PRIX</div>
+          <div style="color:var(--text);font-weight:700;">$${fmt(k.c)}</div>
+        </div>
+        <div>
+          <div style="color:var(--muted);font-size:9px;">VARIATION</div>
+          <div style="color:${chgCol};font-weight:700;">${chg>=0?'+':''}${chg.toFixed(2)}%</div>
+        </div>
+        <div>
+          <div style="color:var(--muted);font-size:9px;">VOLUME</div>
+          <div style="color:var(--text);">${volFmt}</div>
+        </div>
+        <div>
+          <div style="color:var(--muted);font-size:9px;">H / L</div>
+          <div style="color:var(--text);font-size:10px;">$${fmt(k.h)} / $${fmt(k.l)}</div>
+        </div>
+      </div>`;
+
+    // Dessiner le crosshair
+    const dpr  = window.devicePixelRatio || 1;
+    const ctx  = canvas.getContext('2d');
+    renderSparkline();   // redraw propre
+    const lx = X(closest);
+    const ly = chartState.Y(k.c);
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    // Ligne verticale
+    ctx.beginPath();
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1;
+    ctx.moveTo(lx, chartState.pad.t);
+    ctx.lineTo(lx, chartState.priceH + chartState.gap + chartState.volH);
+    ctx.stroke();
+    // Ligne horizontale
+    ctx.beginPath();
+    ctx.moveTo(chartState.pad.l, ly);
+    ctx.lineTo(chartState.pad.l + (W - chartState.pad.l - chartState.pad.r), ly);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Dot sur la ligne
+    ctx.beginPath();
+    ctx.arc(lx, ly, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fill();
+    ctx.restore();
+
+    // Position tooltip
+    const canvasRect = canvas.getBoundingClientRect();
+    const tooltipW   = 320;
+    let   tx = mx + 14;
+    if (tx + tooltipW > canvasRect.width) tx = mx - tooltipW - 10;
+    tooltip.style.left    = tx + 'px';
+    tooltip.style.top     = '8px';
+    tooltip.style.display = 'block';
+  }
+
+  function onLeave() {
+    tooltip.style.display = 'none';
+    renderSparkline();
+  }
+
+  function onClick(e) {
+    const { badges } = chartState;
+    if (!badges || !badges.length) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx   = e.clientX - rect.left;
+    const my   = e.clientY - rect.top;
+    const hit  = badges.find(b =>
+      mx >= b.x - b.w/2 && mx <= b.x + b.w/2 && my >= b.y && my <= b.y + b.h
+    );
+    if (hit) {
+      tooltip.style.display = 'none';
+      showFromHistory(hit.entry.id);
+      // Scroll vers le panneau Claude
+      $('claude-out').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  canvas.addEventListener('mousemove',  onMove);
+  canvas.addEventListener('touchmove',  onMove, { passive: true });
+  canvas.addEventListener('mouseleave', onLeave);
+  canvas.addEventListener('touchend',   onLeave);
+  canvas.addEventListener('click',      onClick);
 }
 
 // ──────────────── RENDER: LEVELS ─────────────────────────────────
@@ -1029,6 +1690,83 @@ function renderSignals() {
   checkSignalChanges(r, volRatio);
 }
 
+// ──────────────── HISTORIQUE ANALYSES ───────────────────────────
+const HIST_MAX = 5;
+const histKey  = () => `btc_history_${S.tf}`;   // clé séparée par TF : btc_history_4h / btc_history_1d
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(histKey()) || '[]'); }
+  catch { return []; }
+}
+
+function saveToHistory(cache) {
+  const hist = loadHistory();
+  const entry = {
+    id:       Date.now(),
+    ts:       new Date().toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }),
+    price:    S.price,
+    rsi:      S.rsi,
+    fg:       S.fg?.v ?? null,
+    tf:       S.tf.toUpperCase(),
+    analyses: { entry: cache.entry, risk: cache.risk, scenarios: cache.scenarios },
+  };
+  hist.unshift(entry);
+  if (hist.length > HIST_MAX) hist.length = HIST_MAX;
+  localStorage.setItem(histKey(), JSON.stringify(hist));
+  renderHistory(hist, entry.id);
+}
+
+function renderHistory(hist, activeId) {
+  if (!hist || hist.length === 0) {
+    $('hist-wrap').style.display = 'none';
+    return;
+  }
+  $('hist-wrap').style.display = 'block';
+
+  // Titre avec compteur et TF actif
+  const titleEl = $('hist-wrap').querySelector('.hist-title span:first-child');
+  if (titleEl) titleEl.textContent = `Historique ${S.tf.toUpperCase()} (${hist.length}/${HIST_MAX})`;
+
+  const rsiColor = r => r == null ? 'var(--muted)' : r < 30 ? 'var(--green)' : r < 40 ? 'var(--amber)' : r > 70 ? 'var(--red)' : 'var(--muted)';
+
+  $('hist-list').innerHTML = hist.map(e => `
+    <div class="hist-entry ${e.id === activeId ? 'active' : ''}" onclick="showFromHistory(${e.id})">
+      <div class="hist-dot"></div>
+      <span class="hist-time">${e.ts}</span>
+      <span class="hist-price">$${e.price ? e.price.toLocaleString('fr-FR', {maximumFractionDigits:0}) : '—'}</span>
+      <span class="hist-rsi" style="color:${rsiColor(e.rsi)}">RSI ${e.rsi ? e.rsi.toFixed(1) : '—'}</span>
+      ${e.fg != null ? `<span style="font-size:9px;color:var(--muted);font-family:var(--mono);">F&G ${e.fg}</span>` : ''}
+    </div>`).join('');
+}
+
+function showFromHistory(id) {
+  const hist = loadHistory();
+  const entry = hist.find(e => e.id === id);
+  if (!entry) return;
+
+  S.claudeCache = { ...entry.analyses };
+  renderHistory(hist, id);
+
+  const cached = S.claudeCache[S.activeTab];
+  if (cached) {
+    $('claude-out').textContent = cached.text;
+    $('claude-st').textContent  = `Analyse du ${entry.ts} · Prix $${entry.price?.toLocaleString('fr-FR',{maximumFractionDigits:0})} · RSI ${entry.rsi?.toFixed(1)} · ${entry.tf}`;
+  }
+
+  ['entry','risk','scenarios'].forEach(t => {
+    const btn = $('btn-' + t);
+    if (btn) {
+      btn.classList.toggle('btn-amber', t === S.activeTab);
+      btn.classList.remove('btn-alert');
+    }
+  });
+}
+
+function clearHistory() {
+  localStorage.removeItem(histKey());
+  $('hist-wrap').style.display = 'none';
+}
+
 // ──────────────── CLAUDE: TAB NAVIGATION ─────────────────────────
 function switchTab(tab) {
   S.activeTab = tab;
@@ -1051,7 +1789,6 @@ function switchTab(tab) {
     st.textContent  = '';
   }
 }
-
 // ──────────────── CLAUDE API ─────────────────────────────────────
 // Retourne le texte généré (ne touche pas au DOM)
 async function callClaude(type) {
@@ -1133,7 +1870,7 @@ Niveaux clés:${(() => {
 
 // ──────────────── INIT ───────────────────────────────────────────
 
-// Rafraîchit uniquement les APIs publiques — auto toutes les 60s
+// Rafraîchit uniquement les APIs publiques — auto 60s + bouton ↻ Données
 async function refreshData() {
   try {
     await Promise.all([fetchKlines(), fetchTicker(), fetchFG()]);
@@ -1144,49 +1881,59 @@ async function refreshData() {
     renderSignals();
     renderAlert();
     renderPrice();
+    renderCalendar();
     $('last-ts').textContent = 'MàJ auto: ' + new Date().toLocaleTimeString('fr-FR');
   } catch(e) {
     console.error('Refresh error:', e);
   }
 }
 
-// Rafraîchit données + génère les 3 analyses Claude — bouton ↻ Refresh
-async function refreshAll() {
-  const btn = document.querySelector('.btn[onclick="refreshAll()"]');
+// Bouton ↻ Données (header) — données de marché + macro, sans Claude
+async function refreshKPIs() {
+  const btn = $('btn-refresh-kpi');
   if (btn) { btn.textContent = '↻ En cours…'; btn.disabled = true; }
+  await Promise.all([refreshData(), fetchMacro()]);
+  renderMacro();
+  if (btn) { btn.textContent = '↻ Données'; btn.disabled = false; }
+  $('last-ts').textContent = 'MàJ: ' + new Date().toLocaleTimeString('fr-FR');
+}
 
-  // 1. Mise à jour des données publiques
-  await refreshData();
+// Bouton ✦ Analyser (panneau Claude) — 3 appels Claude uniquement
+async function runAnalysis() {
+  const btn = $('btn-analyze');
+  if (btn) { btn.textContent = '⏳ En cours…'; btn.disabled = true; }
 
-  // 2. Génération des 3 analyses Claude si clé présente
-  if (S.key) {
-    const out = $('claude-out');
-    const st  = $('claude-st');
-    const types = ['entry', 'risk', 'scenarios'];
-    const labels = { entry: '📊 Points d\'entrée', risk: '🛡 Gestion du risque', scenarios: '🎯 Scénarios' };
-    let totalTokens = 0;
-
-    for (const type of types) {
-      out.textContent  = `⏳ Génération ${labels[type]}…`;
-      st.textContent   = `Appel ${types.indexOf(type)+1}/3 — claude-sonnet-4-20250514`;
-      try {
-        const result = await callClaude(type);
-        const ts = `Généré ${new Date().toLocaleTimeString('fr-FR')} · ${result.tokens} tokens`;
-        S.claudeCache[type] = { text: result.text, ts };
-        totalTokens += +result.tokens || 0;
-      } catch(e) {
-        S.claudeCache[type] = { text: `Erreur : ${e.message}`, ts: '' };
-      }
-    }
-
-    // Afficher l'onglet actif
-    switchTab(S.activeTab);
-    clearAlerts();
-    st.textContent = `3 analyses générées · ${new Date().toLocaleTimeString('fr-FR')} · ~${totalTokens} tokens total`;
+  if (!S.key) {
+    $('claude-out').textContent = '⚠️ Configurez votre clé API Claude dans le bandeau en haut.';
+    if (btn) { btn.textContent = '✦ Analyser'; btn.disabled = false; }
+    return;
   }
 
-  if (btn) { btn.textContent = '↻ Refresh'; btn.disabled = false; }
-  $('last-ts').textContent = 'MàJ complète: ' + new Date().toLocaleTimeString('fr-FR');
+  const out    = $('claude-out');
+  const st     = $('claude-st');
+  const types  = ['entry', 'risk', 'scenarios'];
+  const labels = { entry: '📊 Points d\'entrée', risk: '🛡 Gestion du risque', scenarios: '🎯 Scénarios' };
+  let totalTokens = 0;
+
+  for (const type of types) {
+    out.textContent = `⏳ Génération ${labels[type]}…`;
+    st.textContent  = `Appel ${types.indexOf(type)+1}/3 — claude-sonnet-4-20250514`;
+    try {
+      const result = await callClaude(type);
+      const ts = `Généré ${new Date().toLocaleTimeString('fr-FR')} · ${result.tokens} tokens`;
+      S.claudeCache[type] = { text: result.text, ts };
+      totalTokens += +result.tokens || 0;
+    } catch(e) {
+      S.claudeCache[type] = { text: `Erreur : ${e.message}`, ts: '' };
+    }
+  }
+
+  switchTab(S.activeTab);
+  clearAlerts();
+  st.textContent = `3 analyses générées · ${new Date().toLocaleTimeString('fr-FR')} · ~${totalTokens} tokens total`;
+  saveToHistory(S.claudeCache);
+
+  if (btn) { btn.textContent = '✦ Analyser'; btn.disabled = false; }
 }
 
 window.addEventListener('resize', () => {
@@ -1194,8 +1941,12 @@ window.addEventListener('resize', () => {
   renderLevels();
 });
 
-// Init : onglet par défaut actif
+// Init : onglet par défaut actif + chargement historique
 switchTab('entry');
+renderHistory(loadHistory(), null);
+renderCalendar();              // afficher le calendrier immédiatement
+fetchMacro().then(renderMacro); // charger DXY/SP500 en arrière-plan
+initChartTooltip();
 connectWS();
 refreshData();
 setInterval(refreshData, 60000);

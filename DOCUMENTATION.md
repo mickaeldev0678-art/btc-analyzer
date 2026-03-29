@@ -1,24 +1,27 @@
 # BTC Analyzer — Documentation
 
-> Outil d'analyse technique Bitcoin standalone (fichier HTML local).  
-> Données live via Binance API + Alternative.me · Analyse IA via Claude API.
+> Outil d'analyse technique Bitcoin **standalone** (un seul fichier HTML local).  
+> Données live : Binance · Alternative.me · Twelve Data · Claude API (Anthropic).
 
 ---
 
 ## Table des matières
 
 1. [Installation & démarrage](#1-installation--démarrage)
-2. [Configuration de la clé API Claude](#2-configuration-de-la-clé-api-claude)
-3. [Switcher 4H / Daily](#3-switcher-4h--daily)
-4. [Indicateurs en temps réel](#4-indicateurs-en-temps-réel)
-5. [Graphique prix et volume](#5-graphique-prix-et-volume)
-6. [Supports & résistances](#6-supports--résistances)
-7. [Grille de confluence — Score d'entrée](#7-grille-de-confluence--score-dentrée)
-8. [Analyses Claude AI](#8-analyses-claude-ai)
-9. [Alertes automatiques (surbrillance des boutons)](#9-alertes-automatiques-surbrillance-des-boutons)
-10. [Actualisation des données](#10-actualisation-des-données)
-11. [Stratégie RSI + Volume + EMA 200 — rappel](#11-stratégie-rsi--volume--ema-200--rappel)
-12. [FAQ & cas pratiques](#12-faq--cas-pratiques)
+2. [Configuration des clés API](#2-configuration-des-clés-api)
+3. [Layout & navigation](#3-layout--navigation)
+4. [Switcher 4H / Daily](#4-switcher-4h--daily)
+5. [Indicateurs en temps réel](#5-indicateurs-en-temps-réel)
+6. [Graphique interactif](#6-graphique-interactif)
+7. [Supports & résistances](#7-supports--résistances)
+8. [Calendrier macro & corrélations](#8-calendrier-macro--corrélations)
+9. [Grille de confluence — Score d'entrée](#9-grille-de-confluence--score-dentrée)
+10. [Analyses Claude AI](#10-analyses-claude-ai)
+11. [Historique des analyses](#11-historique-des-analyses)
+12. [Alertes automatiques](#12-alertes-automatiques)
+13. [Actualisation des données](#13-actualisation-des-données)
+14. [Stratégie RSI + Volume + EMA 200 — rappel](#14-stratégie-rsi--volume--ema-200--rappel)
+15. [FAQ & cas pratiques](#15-faq--cas-pratiques)
 
 ---
 
@@ -28,213 +31,268 @@ Aucune installation requise. Le fichier `btc-analyzer.html` est **100% standalon
 
 ```
 1. Télécharger btc-analyzer.html
-2. Double-cliquer pour l'ouvrir dans votre navigateur
+2. Double-cliquer pour l'ouvrir dans le navigateur
 3. Les données Binance se chargent automatiquement
 ```
 
 > **Navigateurs compatibles** : Chrome, Firefox, Edge, Safari (version récente).  
 > **Connexion internet requise** pour les données live.
 
-Les APIs de données de marché (Binance, Alternative.me) sont **publiques et gratuites** — aucune clé n'est nécessaire pour les indicateurs. Seule l'analyse Claude AI nécessite une clé.
+Les APIs Binance et Alternative.me sont **gratuites et sans clé**. Seules les analyses Claude AI et les données macro (DXY/SP500/Or) nécessitent des clés configurées en bas de page.
 
 ---
 
-## 2. Configuration de la clé API Claude
+## 2. Configuration des clés API
 
-La clé API permet d'activer les 3 boutons d'analyse IA dans le panneau Claude.
+Le bloc de configuration se trouve **en bas de la page**, juste avant le footer. Les clés sont stockées dans le `localStorage` du navigateur — elles **ne sont jamais écrites dans le fichier HTML**.
 
-### Comment configurer
+> ⚠️ Ne partagez jamais le fichier si vos clés sont sauvegardées dans votre navigateur local.
+
+### Clé Claude (analyses IA)
 
 ```
 1. Aller sur https://console.anthropic.com
-2. Créer une clé API (section "API Keys")
-3. Copier la clé (format : sk-ant-api03-...)
-4. Coller dans le champ en haut de la page
-5. Cliquer "Sauvegarder"
+2. Section "API Keys" → créer une clé (format : sk-ant-api03-...)
+3. Coller dans le champ 🔑 Claude → Sauvegarder
 ```
 
-Le bandeau passe au vert : **Configurée ✓**
+**Coût** : ~$0.03 par clic ✦ Analyser (3 analyses × ~$0.01).  
+Avec $5 de crédit → ~150 sessions d'analyse complètes.
 
-### Stockage
+### Clé Twelve Data (données macro)
 
-La clé est sauvegardée dans le `localStorage` du navigateur — elle persiste entre les sessions. Elle **n'est jamais envoyée** à un tiers, uniquement à `api.anthropic.com` lors des appels IA.
+Nécessaire pour afficher DXY (UUP), SP500 (SPY), Nasdaq 100 (QQQ) et Or (XAU/USD).
 
-> ⚠️ **Sécurité** : ne partagez jamais le fichier HTML si votre clé y est sauvegardée. Révoquez la clé sur la console Anthropic si vous suspectez une fuite.
+```
+1. Aller sur https://twelvedata.com → Sign Up (gratuit)
+2. Dashboard → API Keys → copier la clé
+3. Coller dans le champ 📈 Twelve Data → Sauvegarder
+4. Les données macro se chargent immédiatement
+```
 
-### Coût estimé
-
-Chaque appel Claude (1 des 3 boutons) consomme environ **800–1 200 tokens input + 400–600 tokens output**.  
-Avec `claude-sonnet-4`, cela représente environ **$0.005 à $0.01 par analyse**.
+**Limite gratuite** : 800 requêtes/jour — 4 symboles par clic ↻ Données = 200 clics/jour.
 
 ---
 
-## 3. Switcher 4H / Daily
+## 3. Layout & navigation
+
+La page est organisée en blocs verticaux :
+
+```
+┌─────────────────────────────────────────────────┐
+│  Header : prix live · ↻ Données · badge LIVE    │
+├─────────────────────────────────────────────────┤
+│  KPIs : RSI · EMA 200 · EMA 50 · Fear & Greed   │
+├────────────────────┬────────────────────────────┤
+│  Calendrier macro  │  Corrélations & DXY         │
+├────────────────────┴────────────────────────────┤
+│  Graphique prix pleine largeur                   │
+│  (ligne + area + volume + tooltip + EMA)         │
+├────────────────────┬────────────────────────────┤
+│  Supports &        │  Grille de confluence       │
+│  Résistances       │  + Score + Plan d'action    │
+├────────────────────┴────────────────────────────┤
+│  Claude AI (onglets + texte) │  Historique       │
+├─────────────────────────────────────────────────┤
+│  Configuration API Keys · Footer                 │
+└─────────────────────────────────────────────────┘
+```
+
+---
+
+## 4. Switcher 4H / Daily
 
 Deux boutons en haut à droite des indicateurs permettent de basculer entre les deux timeframes.
 
 | | **4H** | **Daily** |
 |---|---|---|
-| Horizon de trading | Quelques heures à 2-3 jours | 1 à 4 semaines |
+| Horizon | Quelques heures à 2-3 jours | 1 à 4 semaines |
 | Type | Intraday / Day trading | Swing trading |
 | RSI réagit en | Quelques heures | 2-3 jours |
-| Faux signaux | Plus fréquents | Moins fréquents |
-| Usage recommandé | Timer l'entrée précise | Identifier la zone d'achat |
+| Bougies chargées | 500 | 220 |
+| Usage | Timer l'entrée précise | Identifier la zone d'achat |
 
-### Comment utiliser les deux ensemble
+### Comportement au switch
 
-Le workflow optimal est de **lire le Daily d'abord, puis le 4H pour entrer** :
+- Labels des cartes RSI / EMA mis à jour
+- Graphique : 60 bougies 4H ou 30 bougies Daily
+- Volume recalculé sur les 20 dernières bougies du TF actif
+- **Cache Claude vidé** — les analyses 4H ne sont pas valides en Daily et vice versa
+- **Historique Claude rechargé** — chaque TF a son propre historique de 5 entrées
+- Grille de scoring recalculée
+- Détection de signal réinitialisée
+
+### Workflow optimal
 
 ```
-1. Passer en Daily
-   → Le RSI Daily est à 32, BTC approche d'un support S1
-   → Zone d'achat potentielle identifiée
-
-2. Passer en 4H
-   → Attendre que le RSI 4H descende sous 30
-   → Attendre un spike de volume ≥ 1.5×
-   → C'est le signal d'entrée précis
+1. Daily → identifier la zone (RSI ~35, support proche)
+2. 4H   → timer l'entrée (RSI < 30 + volume spike ≥ 1.5×)
+3. ✦ Analyser en 4H → obtenir niveaux précis d'entrée/TP/SL
 ```
-
-> **Exemple concret** : BTC à $66 000. RSI Daily = 34 (zone de surveillance). RSI 4H = 28 (survente) + volume ×1.8 sur la bougie → **entrée valide**.
-
-### Ce qui change au switch
-
-- Labels des cartes RSI / EMA 50 / EMA 200
-- Sparkline : 60 bougies en 4H, 30 bougies en Daily
-- Volume : comparé sur les 20 dernières bougies du TF actif
-- Grille de scoring et plan d'action recalculés
-- Détection de changement de signal réinitialisée
 
 ---
 
-## 4. Indicateurs en temps réel
+## 5. Indicateurs en temps réel
 
 ### RSI 14
 
-Le RSI (Relative Strength Index) mesure la vitesse et l'amplitude des variations de prix.
-
-| Valeur RSI | Zone | Interprétation |
+| Valeur | Zone | Signal |
 |---|---|---|
-| < 25 | Survente extrême | 🟢 Setup prioritaire — signal fort |
-| 25–30 | Survente | 🟢 Zone d'entrée RSI active |
-| 30–40 | Bas-neutre | 🟡 Surveiller, se rapprocher |
+| < 25 | Survente extrême | 🟢 Setup prioritaire |
+| 25–30 | Survente | 🟢 Zone d'entrée RSI |
+| 30–40 | Bas-neutre | 🟡 Surveiller |
 | 40–60 | Neutre | Attendre |
-| 60–70 | Haut-neutre | Prudence sur les longs |
-| > 70 | Surachat | 🔴 Éviter les entrées longues |
-
-La jauge visuelle montre la position de l'aiguille en temps réel.
-
-**Exemple de lecture** :
-```
-RSI 4H = 27.4 → 🟢 "Survente — zone d'entrée RSI"
-→ Vérifier le volume avant d'agir
-```
+| 60–70 | Haut-neutre | Prudence |
+| > 70 | Surachat | 🔴 Éviter les longs |
 
 ### EMA 200
 
-La moyenne mobile exponentielle sur 200 périodes est le **filtre de tendance macro**.
+Filtre de tendance macro :
 
-- **BTC AU-DESSUS de l'EMA 200** → biais haussier → longs normaux, cibles étendues
-- **BTC EN-DESSOUS de l'EMA 200** → biais baissier → longs réduits, cibles courtes uniquement
+- **BTC au-dessus** → biais haussier → longs normaux, cibles étendues
+- **BTC en-dessous** → biais baissier → longs réduits, cibles courtes uniquement
 
-> En mars 2026, l'EMA 200 Daily est à ~$86K–$93K. BTC à $66K est donc 23% en dessous → **biais baissier confirmé**.
+Sur le graphique, l'EMA 200 est toujours visible même hors plage — elle s'affiche en bord du graphique avec son prix et la distance en % depuis le prix actuel.
 
 ### EMA 50
 
-Résistance/support intermédiaire. En bear market (sous EMA 200) :
-- L'EMA 50 est souvent un **plafond** sur les rebonds
-- Un retour au-dessus de l'EMA 50 est le **premier signal d'amélioration** avant de viser l'EMA 200
+En bear market (BTC sous EMA 200), l'EMA 50 plafonne souvent les rebonds. Un retour au-dessus = premier signal d'amélioration structurelle.
 
 ### Fear & Greed Index
 
-Indice de sentiment de marché de 0 à 100 (source : Alternative.me).
+Source : Alternative.me. Mise à jour automatique toutes les 60s.
 
-| Valeur | Zone | Lecture contrarian |
+| Valeur | Zone | Lecture |
 |---|---|---|
-| 0–15 | Extrême Fear | Potentiel bottom, surveiller entrée |
-| 15–30 | Fear | Zone d'accumulation possible |
-| 45–55 | Neutre | Pas de signal de sentiment |
-| 75–100 | Extrême Greed | Éviter les nouveaux longs |
+| 0–15 | Extrême Fear | Potentiel bottom — surveiller |
+| 15–30 | Fear | Accumulation possible |
+| 45–55 | Neutre | Pas de signal |
+| 75–100 | Extrême Greed | Éviter les longs |
 
-> Un F&G < 15 pendant 3+ jours coïncide historiquement avec des zones de rebond.  
-> **Combiné à RSI < 30** = signal de confluence rare et puissant.
+> F&G < 15 pendant 3+ jours + RSI < 30 = signal de confluence rare et puissant.
 
 ---
 
-## 5. Graphique prix et volume
+## 6. Graphique interactif
 
-### Sparkline
+Le graphique occupe **toute la largeur** de la page.
 
-Affiche les dernières bougies avec :
-- **Ligne de prix** colorée (vert si hausse sur la période, rouge si baisse)
-- **Zone de remplissage** sous la ligne
-- **Point orange** = prix actuel
-- **Ligne bleue pointillée** = EMA 200 (si dans la plage affichée)
-- **Ligne violette pointillée** = EMA 50 (si dans la plage affichée)
+### Éléments affichés
 
-### Volume vs Moyenne
+- Ligne de prix colorée (vert = hausse sur la période, rouge = baisse)
+- Zone de remplissage sous la ligne
+- EMA 200 — ligne bleue pointillée (toujours visible, même hors plage de prix)
+- EMA 50 — ligne violette pointillée (toujours visible)
+- Histogramme de volume en bas du graphique
+- Point orange = prix actuel
+- Badge prix live ancré à droite
 
-Compare le volume de la dernière période à la moyenne des 20 périodes précédentes.
+### Tooltip au survol
 
-| Ratio | Couleur | Signal |
-|---|---|---|
-| < 1.0× | Gris | Volume faible — pas de confirmation |
-| 1.0–1.5× | Gris | Volume normal |
-| 1.5–2.0× | Orange | 🟡 Volume modéré — confirmation partielle |
-| ≥ 2.0× | Vert | 🟢 Spike de volume — confirmation valide |
+Survoler le graphique affiche pour chaque bougie :
 
-**En 4H** : volume de la dernière bougie 4H en M$ (millions)  
-**En Daily** : volume 24h en B$ (milliards)
+```
+Date / heure
+PRIX      VARIATION    VOLUME      H / L
+$66 834   +1.21%       $2.4B       $67 163 / $65 548
+```
 
-> **Exemple** : Volume ratio ×2.3 en vert + RSI 4H à 26 = confluence forte → signal d'entrée valide.
+Un crosshair (ligne verticale + horizontale) suit la souris. Le curseur passe en pointeur au survol des badges.
+
+### Histogramme de volume
+
+| Couleur | Signification |
+|---|---|
+| Vert vif | Spike ≥ 1.5× la moyenne |
+| Vert transparent | Bougie haussière normale |
+| Rouge transparent | Bougie baissière |
+
+### EMA hors plage visible
+
+Quand l'EMA 200 est loin du prix (ex: EMA 200 Daily à $88K, BTC à $66K), elle s'affiche en bord supérieur du graphique avec :
+
+```
+EMA200 $88K (+32.5%)
+```
+
+### Badges historique sur le graphique
+
+Après chaque génération Claude, un badge **AI** est placé sur le graphique à la date et au prix de la génération :
+
+| Couleur | RSI au moment de l'analyse |
+|---|---|
+| 🟢 Vert | RSI < 30 |
+| 🟡 Orange | RSI 30–40 |
+| ⚫ Gris | RSI ≥ 40 |
+
+**Survol** → tooltip : date, prix, RSI, F&G au moment de l'analyse + invitation à cliquer.  
+**Clic** → charge les 3 analyses de ce moment dans les onglets + scroll vers le panneau Claude.
+
+Les badges n'apparaissent que si l'analyse est dans la plage de dates visible du graphique.
 
 ---
 
-## 6. Supports & Résistances
+## 7. Supports & résistances
 
-Le tableau affiche les niveaux clés triés de haut en bas avec la distance en % depuis le prix actuel.
-
-### Types de niveaux
+Tableau trié du plus haut au plus bas avec la distance en % depuis le prix actuel.
 
 | Badge | Type | Description |
 |---|---|---|
 | `EMA` | EMA 50 / EMA 200 | Moyennes mobiles dynamiques |
 | `R` | R1, R2, R3 | Résistances pivot classiques |
-| `▶` | PRIX NOW | Position actuelle (ligne orange) |
+| `▶` | PRIX NOW | Position actuelle |
 | `S` | S1, S2, S3 | Supports pivot classiques |
 | `P` | Pivot | Point pivot central |
 
 ### Calcul des pivots
 
-Les pivots sont calculés depuis la bougie précédente complète (H + L + C) :
+Calculés depuis la dernière bougie complète :
 
 ```
-Pivot (P) = (High + Low + Close) / 3
-R1 = 2×P − Low     S1 = 2×P − High
+P  = (H + L + C) / 3
+R1 = 2×P − L       S1 = 2×P − H
 R2 = P + (H − L)   S2 = P − (H − L)
-R3 = High + 2×(P−Low)   S3 = Low − 2×(High−P)
-```
-
-### Lecture pratique
-
-```
-Prix NOW à $66 600 (orange)
-S1 à $66 291 → −0.5% → support immédiat proche
-S2 à $64 362 → −3.4% → prochain support si S1 casse
-EMA 50 à $74 600 → +12% → résistance intermédiaire
-EMA 200 à $88 000 → +32% → résistance majeure
+R3 = H + 2×(P−L)   S3 = L − 2×(H−P)
 ```
 
 ---
 
-## 7. Grille de confluence — Score d'entrée
+## 8. Calendrier macro & corrélations
 
-6 signaux évalués en temps réel. Chaque signal est représenté par des points :
-- 🟢 **Vert** = signal actif
-- 🟡 **Orange** = signal en approche
-- ⚫ **Gris** = signal inactif
+### Calendrier macro
 
-### Les 6 signaux
+Affiche les **5 prochains événements** macro triés par proximité, avec compte à rebours live :
+
+| Couleur | Signification |
+|---|---|
+| Rouge + `Xh Xm` | Dans les 24h |
+| Orange + `J−X` | Dans les 7 jours |
+| Gris + `J−X` | Plus lointain |
+
+Dots d'impact : ●●● = Fort (FOMC) · ●● = Modéré (CPI, NFP, PCE)
+
+Le compte à rebours se met à jour **toutes les 60s automatiquement** (calcul JS pur, aucune API).
+
+Événements couverts : FOMC (8×/an), CPI (mensuel), NFP (mensuel), PCE (mensuel), Minutes Fed.
+
+### Corrélations & DXY
+
+Mis à jour uniquement au clic **↻ Données** via Twelve Data.
+
+| Indicateur | ETF utilisé | Corrélation BTC | Note |
+|---|---|---|---|
+| Dollar Index | UUP | −0.72 inverse | Rouge = dollar ↑ = pression BTC |
+| S&P 500 | SPY | +0.55 modérée | Rouge = baisse = risk-off |
+| Nasdaq 100 | QQQ | +0.61 modérée | Rouge = baisse |
+| Or | XAU/USD | +0.18 faible | |
+
+**Lecture couleurs DXY** : inversée par rapport aux autres. Dollar qui monte = rouge = mauvais pour BTC.
+
+> Contexte risk-off typique : UUP rouge (↑) + SPY rouge (↓) + QQQ rouge (↓) = triple pression baissière sur BTC.
+
+---
+
+## 9. Grille de confluence — Score d'entrée
 
 | Signal | Poids | Obligatoire |
 |---|---|---|
@@ -245,294 +303,213 @@ EMA 200 à $88 000 → +32% → résistance majeure
 | BTC sous EMA 200 (biais baissier) | ● | Contexte |
 | Support pivot proche (S1/S2) | ●● | Non |
 
-> **Minimum pour entrer : 3 signaux actifs**, dont obligatoirement **RSI < 30 ET Volume ≥ 1.5×**.
+> **Minimum : 3 signaux actifs**, dont **RSI < 30 ET Volume ≥ 1.5×** obligatoirement.
 
 ### Règle fondamentale
 
 ```
-RSI < 30 seul sans volume → Piège baissier fréquent → NE PAS ENTRER
-Volume ×2 seul sans RSI → Direction inconnue → NE PAS ENTRER
-RSI < 30 + Volume ×1.5 + Support → Signal valide → ÉVALUER L'ENTRÉE
+RSI < 30 seul sans volume → Piège baissier → NE PAS ENTRER
+Volume ×2 seul sans RSI   → Direction inconnue → NE PAS ENTRER
+RSI < 30 + Volume ×1.5 + Support → Signal valide → ÉVALUER
 ```
 
 ### Exemples de scores
 
-**Score 2/6 — Trop tôt** *(situation du screenshot)*
-```
-RSI = 33.5 → en approche mais pas encore < 30
-Volume = ×0.13 → très faible
-F&G = 12 → Extreme Fear (positif)
-Support S1 = 0.5% → proche (positif)
-→ Placer alertes RSI=30 et attendre
-```
-
-**Score 4/6 — Conditions favorables**
-```
-RSI = 27 → ✅ Survente active
-Volume = ×1.8 → ✅ Spike modéré
-F&G = 11 → ✅ Extreme Fear
-Support S1 = 0.2% → ✅ BTC dessus
-→ Entrée longue court terme envisageable
-```
-
-**Score 5/6 — Setup optimal**
-```
-RSI = 24 → ✅ Survente extrême
-Volume = ×2.4 → ✅ Spike fort
-F&G = 8 → ✅ Capitulation extrême
-Support S2 = 0.3% → ✅ Niveau solide
-Divergence RSI → ✅ HL sur RSI
-→ Meilleur ratio R:R disponible
-```
+**2/6 — Trop tôt** : RSI = 33, Volume = ×0.13, F&G = 12 → attendre  
+**4/6 — Favorable** : RSI = 27 ✅, Volume = ×1.8 ✅, F&G = 11 ✅, S1 proche ✅ → entrée envisageable  
+**5/6 — Optimal** : RSI = 24 ✅, Volume = ×2.4 ✅, F&G = 8 ✅, S2 ✅, Divergence ✅ → meilleur R:R
 
 ---
 
-## 8. Analyses Claude AI
+## 10. Analyses Claude AI
 
-Les 3 analyses sont **générées simultanément** par le bouton ↻ Refresh. Les boutons 📊 / 🛡 / 🎯 servent uniquement à **naviguer** entre les analyses déjà générées — aucun appel API au clic.
+### Deux boutons distincts
 
-### Fonctionnement
+**↻ Données** (header) :
+- Binance klines + ticker + Fear & Greed + DXY/SP500/QQQ/Or
+- Coût : **$0.00**
 
-```
-↻ Refresh
-  → Met à jour les données Binance + Fear & Greed
-  → Appelle Claude 3 fois de suite (entry → risk → scenarios)
-  → Met chaque résultat en cache
-  → Affiche l'onglet actif
+**✦ Analyser** (panneau Claude) :
+- 3 appels Claude sur les données déjà en mémoire (~15-30s)
+- Coût : **~$0.03**
 
-📊 / 🛡 / 🎯
-  → Affiche l'analyse en cache (navigation instantanée, $0.00)
-  → Si pas encore généré : "cliquez ↻ Refresh"
-```
+**Onglets 📊 / 🛡 / 🎯** :
+- Navigation dans le cache — Coût : **$0.00**
 
-**Coût par ↻ Refresh** : ~$0.03 (3 appels × ~$0.01)  
-**Coût par clic sur un onglet** : $0.00
-
-### Ce que Claude reçoit en contexte
+### Contexte envoyé à Claude
 
 ```
-- Prix actuel + variation 24h
-- RSI 14 du TF actif + RSI de l'autre TF (4H ou Daily)
-- EMA 50 et EMA 200 des deux TF
-- Volume ratio vs moyenne 20 périodes
-- Fear & Greed Index
-- Niveaux pivot S1/S2/R1/R2
-- Contexte macro (conflit géopolitique, corrélation SP500, etc.)
-- Timeframe actif + horizon de trading
+Timeframe actif + horizon · Prix + variation 24h
+RSI 14 (TF actif + autre TF) · EMA 50 et EMA 200 (deux TF)
+Volume ratio · Fear & Greed · Niveaux pivot S1/S2/R1/R2
+Contexte macro (géopolitique, corrélation SP500)
 ```
 
 ### Les 3 onglets
 
-#### 📊 Points d'entrée
-Analyse orientée **timing et niveaux** :
-- Évaluation du RSI actuel pour un point d'entrée
-- Rôle de l'EMA 200 comme filtre
-- Niveaux d'entrée précis avec conditions exactes (prix, RSI, volume)
-- Take-profit et stop-loss recommandés
+**📊 Points d'entrée** — niveaux précis, RSI/volume/prix conditions, TP et SL adaptés au TF.
 
-#### 🛡 Gestion du risque
-Analyse orientée **risk management** :
-- Taille de position recommandée selon le biais macro
-- Stop-loss et take-profit avec prix précis
-- Ratio R:R de l'opportunité actuelle
-- Signaux d'invalidation de la thèse
+**🛡 Gestion du risque** — taille de position, SL et TP avec prix exacts, ratio R:R, signaux d'invalidation.
 
-#### 🎯 Scénarios
-Analyse orientée **probabilités** :
-- Scénario haussier — conditions déclenchantes + cibles + probabilité
-- Scénario neutre — range de consolidation attendu
-- Scénario baissier — niveaux d'invalidation + supports critiques
+**🎯 Scénarios** — haussier / neutre / baissier avec conditions déclenchantes, cibles et probabilités.
 
 ### Workflow type
 
 ```
-1. Signal change → boutons en surbrillance orange (badge NEW)
-2. Cliquer ↻ Refresh
-   → Pendant ~15-30s : "Génération 1/3… 2/3… 3/3…"
-   → Statut final : "3 analyses générées · ~1 450 tokens total"
-3. Naviguer avec 📊 / 🛡 / 🎯 sans aucun coût supplémentaire
-4. Décision prise → ouvrir la position
+1. Badge NEW sur les onglets → signal de changement détecté
+2. ↻ Données → rafraîchir les données de marché
+3. ✦ Analyser → "Appel 1/3… 2/3… 3/3…" (~15-30s)
+4. Naviguer avec 📊 / 🛡 / 🎯 librement ($0.00)
+5. Badge AI apparaît sur le graphique à la date/prix actuel
 ```
-
-### Utilisation locale (file://)
-
-Le fichier fonctionne directement en double-cliquant (protocole `file://`). L'appel à l'API Anthropic est autorisé grâce au header `anthropic-dangerous-direct-browser-access: true` — prévu par Anthropic pour ce cas d'usage.
-
-> Aucun serveur proxy ou backend requis.
 
 ---
 
-## 9. Alertes automatiques (surbrillance des boutons)
+## 11. Historique des analyses
 
-La page surveille **4 zones de signal** à chaque actualisation (toutes les 60s). Quand une zone change, les 3 onglets Claude s'illuminent en orange avec un badge **NEW** — signal que le moment est venu de cliquer ↻ Refresh.
+### Stockage séparé par TF
 
-### Les 4 zones surveillées
+```
+localStorage:
+  btc_history_4h  → 5 analyses 4H max
+  btc_history_1d  → 5 analyses Daily max
+```
+
+Au switch de TF, l'historique bascule vers celui du TF actif.
+
+### Interface
+
+Colonne à droite du texte Claude (en dessous sur mobile) :
+
+```
+Historique 4H (3/5)                     [Effacer]
+● 28/03 17:42   $66 834   RSI 37.8   F&G 12  ← actif
+○ 28/03 16:41   $67 200   RSI 39.1   F&G 12
+○ 28/03 15:39   $68 100   RSI 41.2   F&G 13
+```
+
+**Cliquer une entrée** → charge les 3 analyses de ce moment. Le statut affiche :  
+`Analyse du 28/03 17:42 · Prix $66 834 · RSI 37.8 · 4H`
+
+**Cliquer un badge AI sur le graphique** → même effet.
+
+**Effacer** → supprime uniquement l'historique du TF actif.
+
+---
+
+## 12. Alertes automatiques
+
+La page surveille 4 zones toutes les 60s. Si une zone change, les onglets Claude s'illuminent (badge **NEW**).
 
 | Zone | Changement détecté si… |
 |---|---|
-| **RSI** | Franchit un seuil : `>70`, `60–70`, `40–60`, `30–40`, `25–30`, `<25` |
-| **Fear & Greed** | Change de catégorie : Extreme Fear / Fear / Neutral / Greed / Extreme Greed |
-| **Volume** | Passe de `normal` → `elevated` (×1.5) → `spike` (×2) ou inverse |
-| **EMA cross** | BTC passe au-dessus/en-dessous de l'EMA 50 ou EMA 200 |
-
-### Comportement
+| **RSI** | Franchit un seuil parmi : `<25` / `25–30` / `30–40` / `40–60` / `60–70` / `>70` |
+| **Fear & Greed** | Change de catégorie |
+| **Volume** | Passe `normal` → `elevated` (×1.5) → `spike` (×2) ou inverse |
+| **EMA cross** | BTC passe au-dessus/en-dessous de l'EMA 50 ou 200 |
 
 ```
-Changement détecté → onglets pulsent en orange + badge "NEW"
-                   → message : "⚡ Signal changé — RSI: neutral → low-neutral"
-
-↻ Refresh cliqué → surbrillance disparaît + 3 analyses régénérées
-```
-
-> Le premier chargement de page n'alerte jamais — il initialise le snapshot de référence.
-
-### Exemple pratique
-
-```
-Page ouverte → snapshot initial : RSI zone "neutral", Volume "low"
-60s plus tard → RSI passe de 32 à 29 (zone "oversold")
-→ Onglets s'illuminent + badge NEW
-→ Message : "⚡ Signal changé — RSI: low-neutral → oversold"
-→ Cliquer ↻ Refresh pour générer les 3 analyses avec le contexte actuel
-→ Naviguer avec 📊 / 🛡 / 🎯 pour lire chaque analyse
+Changement → badge NEW + message "⚡ Signal changé — RSI: neutral → low-neutral"
+↻ Données + ✦ Analyser → surbrillance effacée
 ```
 
 ---
 
-## 10. Actualisation des données
+## 13. Actualisation des données
 
-| Source | Fréquence | Données |
+| Source | Fréquence | Coût |
 |---|---|---|
-| **Binance WebSocket** | Temps réel (~1-2s) | Prix, variation 24h |
-| **Binance REST** | Auto toutes les 60s | Klines 4H + Daily, volume |
-| **Alternative.me** | Auto toutes les 60s | Fear & Greed Index |
-| **↻ Refresh (manuel)** | Au clic | Données publiques + 3 analyses Claude |
+| Binance WebSocket | ~1-2s auto | $0.00 |
+| Binance REST + Fear & Greed | 60s auto | $0.00 |
+| Calendrier macro (compte à rebours) | 60s auto (JS pur) | $0.00 |
+| **↻ Données** (manuel) | Au clic | $0.00 |
+| DXY / SP500 / QQQ / Or | Au clic ↻ Données uniquement | $0.00 |
+| **✦ Analyser** (manuel) | Au clic | ~$0.03 |
 
-### Cycle complet d'une session
-
-```
-Ouverture de la page
-  → Chargement Binance 4H + Daily + Fear & Greed (gratuit)
-  → Prix live via WebSocket
-  → Indicateurs calculés, grille de scoring initialisée
-
-Toutes les 60s (automatique)
-  → Binance + Fear & Greed rechargés
-  → RSI, EMA, volume, pivot points recalculés
-  → Alertes de changement de zone évaluées
-  → Si changement → onglets en surbrillance (badge NEW)
-
-↻ Refresh (manuel, sur surbrillance ou à la demande)
-  → Données publiques rechargées
-  → 3 appels Claude successifs (~15-30s)
-  → Analyses mises en cache, onglet actif affiché
-  → Surbrillance effacée
-```
+Les données Twelve Data ne se mettent pas à jour automatiquement — le plan gratuit est limité à 8 req/min, un polling toutes les 60s dépasserait la limite.
 
 ### Calculs recalculés à chaque cycle auto
 
-- RSI 14 (méthode Wilder smoothed) sur les 220 bougies Daily / 500 bougies 4H
-- EMA 50 et EMA 200 depuis les closes Binance
-- Ratio volume vs moyenne 20 périodes du TF actif
-- Pivot points depuis la dernière bougie complète
-- Grille de scoring et plan d'action
-- Détection de changement de zone (4 critères)
+RSI 14 (Wilder) · EMA 50 / EMA 200 (deux TF) · Volume ratio · Pivot points · Grille de scoring · Détection zones de signal
 
 ---
 
-## 11. Stratégie RSI + Volume + EMA 200 — rappel
+## 14. Stratégie RSI + Volume + EMA 200 — rappel
 
-### La règle des 3 filtres
+### Les 3 filtres
 
 ```
-Filtre 1 — EMA 200 (tendance macro)
-  BTC sous EMA 200 → longs courts uniquement, cibles réduites
+Filtre 1 — EMA 200 (macro)
+  BTC sous EMA 200 → longs courts, cibles réduites
   BTC au-dessus    → longs normaux, cibles étendues
 
-Filtre 2 — RSI (timing d'entrée)
-  Attendre RSI < 30 sur le TF actif avant d'entrer
+Filtre 2 — RSI (timing)
+  RSI < 30 sur le TF actif → zone d'entrée
 
 Filtre 3 — Volume (confirmation)
   Spike ≥ 1.5× la moyenne sur la bougie d'entrée
 ```
 
-### Les 3 setups par ordre de fiabilité
+### Les 3 setups par fiabilité
 
-**1. Divergence haussière + volume** *(le plus rare, le plus puissant)*
-```
-Prix : Lower Low (LL)
-RSI  : Higher Low (HL) simultané → divergence
-Volume : en hausse sur la 2e bougie
-→ Signal d'épuisement baissier — meilleur R:R
-```
+**1. Divergence haussière + volume** *(rare, puissant)* — Prix LL + RSI HL + volume en hausse → épuisement baissier.
 
-**2. RSI < 30 + spike volume ≥ 2×** *(entrée en capitulation)*
-```
-RSI < 30, idéalement < 25
-Volume ≥ 2× la moyenne
-Bougie englobante haussière
-→ Entrée au close ou sur pull-back
-```
+**2. RSI < 30 + spike volume ≥ 2×** *(capitulation)* — RSI < 25 idéalement + bougie englobante haussière.
 
-**3. Cross RSI 50 à la hausse + volume** *(momentum)*
-```
-RSI croise 50 à la hausse avec volume fort
-Sortie de zone de consolidation
-→ Entrée momentum, moins défensive
-```
+**3. Cross RSI 50 + volume** *(momentum)* — RSI croise 50 à la hausse en sortie de range.
 
-### Gestion du risque en bear market (BTC sous EMA 200)
+### Gestion du risque en bear market
 
 | Élément | Règle |
 |---|---|
-| Taille de position | Max 50% de la taille normale |
-| Stop-Loss | Sous le dernier support structurel |
-| Take-Profit 1 | EMA 50 (première résistance) |
-| Take-Profit 2 | Résistance suivante si TP1 cassé |
-| Ne jamais viser | L'EMA 200 comme TP direct |
-| R:R minimum | 1:2 avant d'entrer |
+| Taille de position | Max 50% normale |
+| Stop-Loss | Sous dernier support structurel |
+| Take-Profit 1 | EMA 50 |
+| Take-Profit 2 | Résistance suivante |
+| Ne jamais viser | EMA 200 comme TP direct |
+| R:R minimum | 1:2 |
 
 ---
 
-## 12. FAQ & cas pratiques
+## 15. FAQ & cas pratiques
 
-### Q : Le score est à 2/6, je peux quand même entrer ?
+### Q : Le score est à 2/6, je peux entrer ?
 
-Non. Le minimum est 3/6 **avec RSI < 30 ET volume ≥ 1.5×** actifs. Un score 2/6 sans ces deux signaux = attendre.
+Non. Minimum 3/6 avec RSI < 30 ET volume ≥ 1.5× obligatoirement actifs.
 
-### Q : RSI < 30 mais volume à ×0.3 — que faire ?
+### Q : RSI < 30 mais volume à ×0.3 ?
 
-Placer une alerte prix et RSI sur TradingView, ne rien faire. Volume faible = pas de conviction = risque de continuation baissière. Attendre le spike.
+Attendre le spike. Volume faible = piège baissier fréquent. Placer une alerte sur TradingView.
 
-### Q : Les onglets Claude sont en surbrillance, que faire ?
+### Q : Les onglets sont en surbrillance — que faire ?
 
-Cliquer **↻ Refresh** — pas les onglets. Le Refresh génère les 3 analyses en une fois avec les données les plus récentes. Les onglets 📊 / 🛡 / 🎯 permettent ensuite de naviguer entre les analyses sans coût supplémentaire.
+Cliquer **↻ Données** puis **✦ Analyser**. Les onglets eux-mêmes sont de la navigation pure ($0.00).
 
-### Q : Combien coûte un ↻ Refresh ?
+### Q : Combien coûte une session type ?
 
-Environ **$0.03** (3 appels Claude × ~$0.01 chacun). Cliquer sur les onglets 📊 / 🛡 / 🎯 après le Refresh = $0.00.  
-Avec $5 de crédit → environ **150 à 160 Refresh complets**, soit plusieurs mois d'usage quotidien.
+↻ Données = $0.00 · ✦ Analyser = ~$0.03 · Navigation onglets = $0.00. Avec $5 → ~150 sessions.
 
-### Q : En 4H le RSI est à 28, en Daily il est à 38 — j'entre ?
+### Q : RSI 4H = 28 et RSI Daily = 38 — j'entre ?
 
-Le **Daily confirme la zone** (38 = neutre/bas), le **4H confirme le timing** (28 = survente). C'est le combo idéal — si le volume confirme aussi, c'est un setup valide pour un trade court (quelques heures à 2-3 jours). Cible courte car le Daily n'est pas encore en survente.
+Daily confirme la zone, 4H confirme le timing. Si le volume confirme aussi → setup valide court terme. Cible conservatrice (EMA 50 4H) car le Daily n'est pas encore en survente.
 
-### Q : Quelle hausse espérer après un spike ×1.5 ?
+### Q : Quelle hausse espérer après un spike ×1.5 en bear market ?
 
-En contexte bear market (BTC sous EMA 200), les rebonds post-spike se limitent généralement à :
-- **+4% à +8%** en 4H sur les 3-5 bougies suivantes
-- **+6% à +12%** en Daily si RSI < 30 + support solide
+4H : +4% à +8% sur 3-5 bougies. Daily : +6% à +12% si RSI < 30 + support. L'EMA 50 plafonne souvent le rebond.
 
-La résistance EMA 50 plafonne souvent le rebond. Prendre des profits partiels à l'approche de l'EMA 50.
+### Q : Les badges AI n'apparaissent pas sur le graphique ?
 
-### Q : À quelle fréquence le score atteint 4/6 ou plus ?
+L'analyse doit être dans la plage de dates visible. En 4H (60 bougies ≈ 10 jours), une analyse de J-15 est invisible. Passer en Daily (30 jours) ou générer une nouvelle analyse.
 
-En bear market, rarement — peut-être **2 à 4 fois par mois** en Daily. C'est normal. La stratégie est conçue pour attendre les setups de qualité, pas pour trader en permanence.
+### Q : DXY affiche "Clé Twelve Data requise" ?
 
-### Q : La page ne fonctionne pas en local (Failed to fetch) ?
+Configurer la clé Twelve Data dans le bloc en bas de page. Sans elle, DXY/SP500/QQQ/Or ne se chargent pas — le reste fonctionne normalement.
 
-Le fichier doit être ouvert directement depuis le navigateur (`file://`). Le header `anthropic-dangerous-direct-browser-access: true` est inclus dans le code pour autoriser l'accès direct à l'API Anthropic sans serveur proxy. Si l'erreur persiste, vérifier que la clé API est bien configurée et valide sur [console.anthropic.com](https://console.anthropic.com).
+### Q : Failed to fetch sur Claude en local ?
+
+Ouvrir le fichier directement depuis le navigateur (`file://`). Le header CORS Anthropic est inclus. Si ça persiste, vérifier la clé sur [console.anthropic.com](https://console.anthropic.com).
 
 ---
 
-*Pas un conseil financier — DYOR. Données : Binance API · Alternative.me · Claude API (Anthropic)*
+*Pas un conseil financier — DYOR.*  
+*Sources : Binance API · Alternative.me · Twelve Data · Claude API (Anthropic)*
