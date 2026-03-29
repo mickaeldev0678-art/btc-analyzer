@@ -4,30 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BTC Analyzer — RSI + EMA 200 + Claude AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:      #07070e;
-  --bg2:     #0d0d1c;
-  --bg3:     #13132a;
-  --bg4:     #1a1a35;
+  --bg:      #0a0a0c;
+  --bg2:     #111114;
+  --bg3:     #18181d;
+  --bg4:     #1f1f26;
   --border:  rgba(255,255,255,0.07);
   --border2: rgba(255,255,255,0.13);
-  --text:    #dde1f0;
-  --muted:   #5a5a7a;
-  --amber:   #f59e0b;
-  --amber2:  #fbbf24;
-  --green:   #10b981;
-  --red:     #ef4444;
+  --text:    #e8e8ec;
+  --muted:   #6b6b7a;
+  --amber:   #f7931a;
+  --amber2:  #ffaa44;
+  --green:   #00d084;
+  --red:     #ff4d4f;
   --blue:    #60a5fa;
   --purple:  #a78bfa;
-  --mono:    'Space Mono', monospace;
-  --sans:    'DM Sans', sans-serif;
+  --mono:    'JetBrains Mono', ui-monospace, monospace;
+  --sans:    'Inter', system-ui, -apple-system, sans-serif;
   --radius:  10px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; }
 body { min-height: 100vh; }
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.35;
+}
 a { color: var(--amber); }
 
 /* ── SCROLLBAR ── */
@@ -39,26 +47,47 @@ a { color: var(--amber); }
 .header {
   position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  padding: 12px 24px; background: rgba(7,7,14,0.92); backdrop-filter: blur(12px);
+  padding: 12px 24px; background: rgba(10,10,12,0.88); backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
 .logo { display: flex; align-items: center; gap: 10px; }
 .logo-icon {
-  width: 34px; height: 34px; border-radius: 8px; background: var(--amber);
+  width: 34px; height: 34px; border-radius: 50%; background: var(--amber);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--mono); font-size: 15px; font-weight: 700; color: #000;
 }
 .logo-info { line-height: 1.3; }
 .logo-name { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
-.logo-sub  { font-size: 10px; color: var(--muted); font-family: var(--mono); }
-.header-price { text-align: center; }
-.price-val  { font-family: var(--mono); font-size: 26px; font-weight: 700; letter-spacing: -0.03em; }
-.price-chg  { font-family: var(--mono); font-size: 11px; margin-top: 1px; }
+.logo-sub  { font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.02em; }
+
+/* ── HEADER PRICE BLOC ── */
+.header-price {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.price-main {
+  display: flex; align-items: baseline; gap: 10px;
+}
+.price-val  { font-family: var(--mono); font-size: 28px; font-weight: 700; letter-spacing: -0.03em; }
+.price-chg  {
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  padding: 2px 8px; border-radius: 5px;
+}
+.price-chg.up   { color: var(--green); background: rgba(0,208,132,0.1); }
+.price-chg.down { color: var(--red);   background: rgba(255,77,79,0.1); }
+.price-stats {
+  display: flex; align-items: center; gap: 14px;
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+}
+.price-stat { display: flex; align-items: center; gap: 4px; }
+.price-stat-lbl { color: var(--muted); }
+.price-stat-val { color: var(--text); font-weight: 500; }
+.price-sep { width: 1px; height: 12px; background: var(--border2); }
+
 .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .live-pill {
   display: flex; align-items: center; gap: 5px;
   padding: 4px 10px; border-radius: 20px;
-  background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);
+  background: rgba(0,208,132,0.08); border: 1px solid rgba(0,208,132,0.2);
   font-family: var(--mono); font-size: 10px; color: var(--green);
 }
 .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; }
@@ -67,22 +96,22 @@ a { color: var(--amber); }
 
 /* ── BUTTONS ── */
 .btn {
-  padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--border2);
+  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border2);
   background: transparent; color: var(--text); font-family: var(--sans); font-size: 12px;
-  font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap;
 }
-.btn:hover { background: var(--bg3); }
+.btn:hover { background: var(--bg3); border-color: rgba(255,255,255,0.2); }
 .btn:active { transform: scale(0.97); }
 .btn-sm { padding: 5px 10px; font-size: 11px; }
-.btn-amber { background: var(--amber); color: #000; border-color: var(--amber); }
-.btn-amber:hover { background: var(--amber2); border-color: var(--amber2); }
+.btn-amber { background: var(--amber); color: #000; border-color: var(--amber); font-weight: 600; }
+.btn-amber:hover { background: var(--amber2); border-color: var(--amber2); box-shadow: 0 4px 20px rgba(247,147,26,0.3); }
 .btn-ghost { border-color: transparent; }
 .btn-ghost:hover { border-color: var(--border2); }
 
 /* ── SIGNAL ALERT ON BUTTONS ── */
 @keyframes pulse-border {
-  0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); border-color: var(--amber); }
-  50%      { box-shadow: 0 0 0 5px rgba(245,158,11,0.2); border-color: var(--amber2); }
+  0%,100% { box-shadow: 0 0 0 0 rgba(247,147,26,0); border-color: var(--amber); }
+  50%      { box-shadow: 0 0 0 5px rgba(247,147,26,0.2); border-color: var(--amber2); }
 }
 @keyframes badge-pop {
   0%   { transform: scale(0); opacity: 0; }
@@ -119,7 +148,7 @@ a { color: var(--amber); }
 .setup-banner {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   padding: 12px 16px; margin-bottom: 20px;
-  background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius);
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px;
 }
 .setup-label { font-size: 11px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
 .setup-input {
@@ -137,7 +166,7 @@ a { color: var(--amber); }
 /* ── SECTION TITLE ── */
 .section-title {
   display: flex; align-items: center; gap: 10px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--muted);
   margin-bottom: 12px; font-family: var(--mono);
 }
@@ -146,10 +175,10 @@ a { color: var(--amber); }
 /* ── CARDS ── */
 .card {
   background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px;
+  border-radius: 12px; padding: 16px;
 }
-.card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 8px; }
-.card-val   { font-family: var(--mono); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+.card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 8px; }
+.card-val   { font-family: var(--mono); font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
 .card-sub   { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 3px; }
 
 /* ── GRIDS ── */
@@ -161,9 +190,9 @@ a { color: var(--amber); }
 .rsi-track {
   height: 7px; border-radius: 4px; position: relative; margin: 10px 0 5px;
   background: linear-gradient(90deg,
-    var(--green) 0%, var(--green) 30%,
-    #3a3a58 30%, #3a3a58 70%,
-    var(--red) 70%);
+    #00d084 0%, #00d084 30%,
+    #2a2a35 30%, #2a2a35 70%,
+    #ff4d4f 70%);
 }
 .rsi-needle {
   position: absolute; top: 50%; transform: translate(-50%,-50%);
@@ -177,7 +206,7 @@ a { color: var(--amber); }
 /* ── FG BAR ── */
 .fg-track {
   height: 6px; border-radius: 3px; position: relative; margin: 10px 0 5px;
-  background: linear-gradient(90deg, #ef4444, #f97316, #f59e0b, #84cc16, #10b981);
+  background: linear-gradient(90deg, #ff4d4f, #f7931a, #f7931a, #84cc16, #00d084);
 }
 .fg-needle {
   position: absolute; top: 50%; transform: translate(-50%,-50%);
@@ -207,31 +236,31 @@ a { color: var(--amber); }
 
 /* ── SIGNAL ROWS ── */
 .sig-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 0; border-bottom: 1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 0; border-bottom:1px solid var(--border);
 }
-.sig-row:last-child { border-bottom: none; }
-.sig-name { font-size: 12px; color: var(--text); }
-.sig-sub  { font-size: 10px; color: var(--muted); margin-top: 1px; font-family: var(--mono); }
-.dots     { display: flex; gap: 4px; }
-.dot      { width: 8px; height: 8px; border-radius: 50%; }
-.d-on     { background: var(--green); }
-.d-warn   { background: var(--amber); }
-.d-off    { background: var(--border2); }
+.sig-row:last-child { border-bottom:none; }
+.sig-name { font-size:12px; color:var(--text); font-weight:500; }
+.sig-sub  { font-size:10px; color:var(--muted); margin-top:1px; font-family:var(--mono); }
+.dots     { display:flex; gap:4px; }
+.dot      { width:8px; height:8px; border-radius:50%; }
+.d-on     { background:var(--green); }
+.d-warn   { background:var(--amber); }
+.d-off    { background:var(--border2); }
 
 /* ── SCORE BOX ── */
-.score-box { padding: 11px 13px; border-radius: 8px; background: var(--bg3); margin-top: 12px; font-size: 12px; font-family: var(--mono); line-height: 1.6; }
+.score-box { padding: 11px 13px; border-radius: 10px; background: var(--bg3); margin-top: 12px; font-size: 12px; font-family: var(--mono); line-height: 1.6; }
 
 /* ── ENTRY ZONES ── */
-.ez { padding: 10px 12px; border-radius: 8px; border-left: 3px solid; margin-bottom: 8px; font-size: 12px; line-height: 1.6; }
-.ez-g { border-color: var(--green); background: rgba(16,185,129,0.06); }
-.ez-a { border-color: var(--amber); background: rgba(245,158,11,0.06); }
-.ez-r { border-color: var(--red);   background: rgba(239,68,68,0.06); }
+.ez { padding: 10px 12px; border-radius: 10px; border-left: 3px solid; margin-bottom: 8px; font-size: 12px; line-height: 1.6; }
+.ez-g { border-color: var(--green); background: rgba(0,208,132,0.06); }
+.ez-a { border-color: var(--amber); background: rgba(247,147,26,0.06); }
+.ez-r { border-color: var(--red);   background: rgba(255,77,79,0.06); }
 
 /* ── CLAUDE PANEL ── */
 .claude-out {
   background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 8px; padding: 14px; min-height: 160px;
+  border-radius: 10px; padding: 14px; min-height: 160px;
   font-size: 13px; line-height: 1.75; color: var(--text);
   white-space: pre-wrap; font-family: var(--sans);
 }
@@ -243,25 +272,27 @@ a { color: var(--amber); }
   margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px;
 }
 .hist-title {
-  font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--muted); font-family: var(--mono); margin-bottom: 7px;
   display: flex; align-items: center; justify-content: space-between;
 }
 .hist-list { display: flex; flex-direction: column; gap: 4px; }
 .hist-entry {
-  display: flex; align-items: center; gap: 8px;
-  padding: 6px 9px; border-radius: 7px; cursor: pointer;
+  display: grid;
+  grid-template-columns: 10px 70px 1fr 52px 28px;
+  align-items: center; gap: 6px;
+  padding: 7px 9px; border-radius: 7px; cursor: pointer;
   border: 1px solid transparent; background: var(--bg3);
   transition: all 0.12s; font-family: var(--mono);
 }
 .hist-entry:hover { border-color: var(--border2); background: var(--bg4); }
-.hist-entry.active { border-color: var(--amber); background: rgba(245,158,11,0.06); }
+.hist-entry.active { border-color: var(--amber); background: rgba(247,147,26,0.06); }
 .hist-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
-.hist-entry.active .hist-dot { background: var(--amber); box-shadow: 0 0 5px rgba(245,158,11,0.5); }
-.hist-time  { font-size: 10px; color: var(--muted); min-width: 72px; }
-.hist-price { font-size: 11px; font-weight: 700; color: var(--text); min-width: 68px; }
-.hist-rsi   { font-size: 10px; min-width: 52px; }
-.hist-tf    { font-size: 9px; color: var(--muted); padding: 1px 5px; border-radius: 4px; background: var(--bg4); }
+.hist-entry.active .hist-dot { background: var(--amber); box-shadow: 0 0 5px rgba(247,147,26,0.5); }
+.hist-time  { font-size: 9px; color: var(--muted); white-space: nowrap; }
+.hist-price { font-size: 11px; font-weight: 700; color: var(--text); }
+.hist-rsi   { font-size: 10px; white-space: nowrap; }
+.hist-fg    { font-size: 9px; color: var(--muted); text-align: right; white-space: nowrap; }
 .hist-clear { font-size: 9px; color: var(--muted); cursor: pointer; font-family: var(--mono); }
 .hist-clear:hover { color: var(--red); }
 
@@ -270,10 +301,10 @@ a { color: var(--amber); }
 .vol-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
 
 /* ── ALERT BANNER ── */
-.alert { padding: 11px 14px; border-radius: 8px; border-left: 3px solid; margin-bottom: 16px; font-size: 12px; line-height: 1.7; }
-.alert-r { border-color: var(--red);   background: rgba(239,68,68,0.07); }
-.alert-a { border-color: var(--amber); background: rgba(245,158,11,0.07); }
-.alert-g { border-color: var(--green); background: rgba(16,185,129,0.07); }
+.alert { padding: 11px 14px; border-radius: 10px; border-left: 3px solid; margin-bottom: 16px; font-size: 12px; line-height: 1.7; }
+.alert-r { border-color: var(--red);   background: rgba(255,77,79,0.07); }
+.alert-a { border-color: var(--amber); background: rgba(247,147,26,0.07); }
+.alert-g { border-color: var(--green); background: rgba(0,208,132,0.07); }
 .alert-title { font-weight: 600; margin-bottom: 4px; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; font-family: var(--mono); }
 
 /* ── MISC ── */
@@ -289,7 +320,7 @@ canvas  { display: block; border-radius: 4px; }
 /* ── TF SWITCHER ── */
 .tf-switch { display: flex; gap: 4px; margin-left: 6px; }
 .tf-btn {
-  padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 700;
+  padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 600;
   font-family: var(--mono); letter-spacing: 0.05em; cursor: pointer;
   border: 1px solid var(--border2); background: transparent;
   color: var(--muted); transition: all 0.15s;
@@ -300,8 +331,8 @@ canvas  { display: block; border-radius: 4px; }
 }
 .tf-context {
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 3px 8px; border-radius: 6px;
-  background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);
+  padding: 3px 10px; border-radius: 100px;
+  background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.25);
   font-size: 9px; font-family: var(--mono); color: var(--amber);
   margin-left: 4px;
 }
@@ -316,24 +347,24 @@ canvas  { display: block; border-radius: 4px; }
   transition: border-color 0.12s;
 }
 .ev-row:last-child { margin-bottom:0; }
-.ev-row.ev-urgent { border-color:rgba(239,68,68,0.45); background:rgba(239,68,68,0.05); }
-.ev-row.ev-soon   { border-color:rgba(245,158,11,0.35); background:rgba(245,158,11,0.04); }
+.ev-row.ev-urgent { border-color:rgba(255,77,79,0.45); background:rgba(255,77,79,0.05); }
+.ev-row.ev-soon   { border-color:rgba(247,147,26,0.35); background:rgba(247,147,26,0.04); }
 .ev-badge {
   font-size:8px; font-weight:700; padding:2px 5px; border-radius:4px;
   min-width:38px; text-align:center; flex-shrink:0; font-family:var(--mono);
 }
 .b-fomc { background:rgba(167,139,250,0.18); color:#a78bfa; }
 .b-cpi  { background:rgba(96,165,250,0.18);  color:#60a5fa; }
-.b-nfp  { background:rgba(16,185,129,0.18);  color:#10b981; }
-.b-pce  { background:rgba(245,158,11,0.18);  color:#f59e0b; }
+.b-nfp  { background:rgba(0,208,132,0.18);   color:#00d084; }
+.b-pce  { background:rgba(247,147,26,0.18);  color:#f7931a; }
 .ev-info { flex:1; min-width:0; }
 .ev-name { font-size:11px; color:var(--text); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .ev-desc { font-size:9px; color:var(--muted); margin-top:1px; font-family:var(--mono); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .ev-right { text-align:right; flex-shrink:0; }
 .ev-cd  { font-size:11px; font-weight:700; font-family:var(--mono); }
 .ev-imp { display:flex; gap:2px; margin-top:3px; justify-content:flex-end; }
-.imp-on  { width:5px; height:5px; border-radius:50%; background:var(--red); display:inline-block; }
-.imp-mid { width:5px; height:5px; border-radius:50%; background:var(--amber); display:inline-block; }
+.imp-on  { width:5px; height:5px; border-radius:50%; background:#ff4d4f; display:inline-block; }
+.imp-mid { width:5px; height:5px; border-radius:50%; background:#f7931a; display:inline-block; }
 .imp-off { width:5px; height:5px; border-radius:50%; background:var(--bg4); display:inline-block; }
 .corr-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
 .corr-item { background:var(--bg3); border-radius:7px; padding:8px 10px; border:1px solid var(--border); }
@@ -347,7 +378,7 @@ canvas  { display: block; border-radius: 4px; }
 @media (max-width:900px) { .macro-wrap { grid-template-columns:1fr; } }
 
 /* ── DISCLAIMER ── */
-.footer { text-align: center; padding: 16px 0; color: var(--muted); font-size: 10px; font-family: var(--mono); border-top: 1px solid var(--border); margin-top: 8px; }
+.footer { text-align: center; padding: 20px 0; color: var(--muted); font-size: 10px; font-family: var(--mono); border-top: 1px solid var(--border); margin-top: 8px; letter-spacing: 0.03em; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
@@ -377,8 +408,31 @@ canvas  { display: block; border-radius: 4px; }
   </div>
 
   <div class="header-price">
-    <div class="price-val text-a" id="hdr-price">—</div>
-    <div class="price-chg" id="hdr-chg" style="color:var(--muted);">chargement…</div>
+    <div class="price-main">
+      <div class="price-val" id="hdr-price">—</div>
+      <div class="price-chg" id="hdr-chg">—</div>
+    </div>
+    <div class="price-stats">
+      <div class="price-stat">
+        <span class="price-stat-lbl">H24</span>
+        <span class="price-stat-val" id="hdr-high">—</span>
+      </div>
+      <div class="price-sep"></div>
+      <div class="price-stat">
+        <span class="price-stat-lbl">B24</span>
+        <span class="price-stat-val" id="hdr-low">—</span>
+      </div>
+      <div class="price-sep"></div>
+      <div class="price-stat">
+        <span class="price-stat-lbl">Vol</span>
+        <span class="price-stat-val" id="hdr-vol">—</span>
+      </div>
+      <div class="price-sep"></div>
+      <div class="price-stat">
+        <span class="price-stat-lbl">Mkt</span>
+        <span class="price-stat-val" id="hdr-mkt">—</span>
+      </div>
+    </div>
   </div>
 
   <div class="header-right">
@@ -520,14 +574,6 @@ canvas  { display: block; border-radius: 4px; }
         pointer-events:none; white-space:nowrap;
       "></div>
       <canvas id="spark" style="width:100%; display:block; cursor:crosshair;"></canvas>
-      <div id="chart-live-price" style="
-        position:absolute; right:0; top:50%;
-        transform:translateY(-50%);
-        background:var(--amber); color:#000;
-        font-family:var(--mono); font-size:9px; font-weight:700;
-        padding:2px 5px; border-radius:4px 0 0 4px;
-        pointer-events:none; white-space:nowrap;
-      "></div>
     </div>
     <!-- Barre volume compacte -->
     <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
@@ -638,6 +684,7 @@ const S = {
   claudeCache: { entry: null, risk: null, scenarios: null }, // cache des 3 analyses
   macro: { dxy: null, sp500: null, nasdaq: null, gold: null },
   tdKey: localStorage.getItem('btc_td_key') || '',
+  ticker: null,
 };
 let ws = null;
 
@@ -938,6 +985,7 @@ function switchTF(tf) {
 async function fetchTicker() {
   const r = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
   const d = await r.json();
+  S.ticker = d;
   S.vol24  = +d.quoteVolume;
   if (!S.price) { S.price = +d.lastPrice; S.chg24 = +d.priceChangePercent; }
 }
@@ -976,8 +1024,22 @@ function renderPrice() {
   const up = S.chg24 >= 0;
   $('hdr-price').textContent = '$' + fmt(S.price);
   $('hdr-price').style.color = up ? 'var(--green)' : 'var(--red)';
-  $('hdr-chg').textContent   = (up?'+':'') + fmt2(S.chg24) + '% (24h)';
-  $('hdr-chg').style.color   = up ? 'var(--green)' : 'var(--red)';
+  const chgEl = $('hdr-chg');
+  chgEl.textContent = (up ? '+' : '') + fmt2(S.chg24) + '%';
+  chgEl.className = 'price-chg ' + (up ? 'up' : 'down');
+
+  // High / Low / Volume / Market Cap
+  if (S.ticker) {
+    $('hdr-high').textContent = '$' + fmt(+S.ticker.highPrice);
+    $('hdr-low').textContent  = '$' + fmt(+S.ticker.lowPrice);
+    const vol = +S.ticker.quoteVolume;
+    $('hdr-vol').textContent  = vol >= 1e9
+      ? (vol / 1e9).toFixed(1) + 'B'
+      : (vol / 1e6).toFixed(0) + 'M';
+    // Market cap estimé (circulating supply BTC ~19.85M)
+    const mkt = S.price * 19850000;
+    $('hdr-mkt').textContent = '$' + (mkt / 1e12).toFixed(2) + 'T';
+  }
 }
 
 // ──────────────── RENDER: KPIs ───────────────────────────────────
@@ -1076,9 +1138,9 @@ function renderSparkline() {
   const wrapper = canvas.parentElement;
   const dpr = window.devicePixelRatio || 1;
   const W   = wrapper.offsetWidth;
-  const priceH = 180;
-  const volH   = 44;
-  const gap    = 6;
+  const priceH = 210;
+  const volH   = 48;
+  const gap    = 8;
   const H      = priceH + gap + volH;
 
   canvas.style.width  = W + 'px';
@@ -1092,70 +1154,111 @@ function renderSparkline() {
   const nCandles = S.tf === '4h' ? 60 : 30;
   const data = S.klines.slice(-nCandles);
   const closes = data.map(k => k.c);
-  const vols   = data.map(k => k.v * k.c); // volume en USDT
+  const vols   = data.map(k => k.v * k.c);
 
   const maxP  = Math.max(...data.map(k => k.h));
   const minP  = Math.min(...data.map(k => k.l));
   const rangeP = maxP - minP || 1;
   const maxV  = Math.max(...vols);
 
-  const pad = { t: 14, b: 18, l: 4, r: 58 };
+  const pad = { t: 22, b: 20, l: 4, r: 80 };
   const cw  = W - pad.l - pad.r;
 
-  // Coordonnée X d'un index
-  const X = i => pad.l + (i / (data.length - 1)) * cw;
-  // Coordonnée Y prix
-  const Y = p => pad.t + (1 - (p - minP) / rangeP) * (priceH - pad.t - pad.b);
-  // Coordonnée Y volume (dans la zone volume)
+  const X  = i => pad.l + (i / (data.length - 1)) * cw;
+  const Y  = p => pad.t + (1 - (p - minP) / rangeP) * (priceH - pad.t - pad.b);
   const YV = v => priceH + gap + volH - (v / maxV) * volH * 0.92;
 
   ctx.clearRect(0, 0, W, H);
 
-  // ── EMA lines — affichées même hors plage (clippées au bord) ──
-  [[S.ema200, 'rgba(96,165,250,0.65)', '#60a5fa', 'EMA200'],
-   [S.ema50,  'rgba(167,139,250,0.65)', '#a78bfa', 'EMA50']].forEach(([ema, col, colSolid, lbl]) => {
+  // ── Axe prix droit — graduations régulières style TradingView ──
+  const priceRange = maxP - minP;
+  const rawStep = priceRange / 5;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const step = Math.ceil(rawStep / magnitude) * magnitude;
+  const firstLevel = Math.ceil(minP / step) * step;
+
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.textAlign = 'left';
+  for (let price = firstLevel; price <= maxP; price += step) {
+    const y = Y(price);
+    if (y < pad.t || y > priceH - pad.b) continue;
+    // Ligne de grille subtile
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([]);
+    ctx.moveTo(pad.l, y);
+    ctx.lineTo(pad.l + cw, y);
+    ctx.stroke();
+    // Label prix à droite
+    const txt = '$' + price.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
+    const tw = ctx.measureText(txt).width;
+    const px = pad.l + cw + 4;
+    // Petit tick
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.moveTo(pad.l + cw, y);
+    ctx.lineTo(pad.l + cw + 3, y);
+    ctx.stroke();
+    // Texte
+    ctx.fillStyle = 'rgba(160,160,180,0.7)';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(txt, px, y);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  // ── EMA lines — labels à GAUCHE ──
+  [[S.ema200, 'rgba(96,165,250,0.5)', '#60a5fa', 'EMA200'],
+   [S.ema50,  'rgba(167,139,250,0.5)', '#a78bfa', 'EMA50']].forEach(([ema, col, colSolid, lbl]) => {
     if (!ema) return;
     const inRange = ema >= minP * 0.97 && ema <= maxP * 1.03;
     const ye = inRange
       ? Y(ema)
-      : ema > maxP ? pad.t + 2           // au-dessus → coller en haut
-                   : priceH - pad.b - 2;  // en-dessous → coller en bas
+      : ema > maxP ? pad.t + 12
+                   : priceH - pad.b - 12;
 
     // Ligne
     ctx.beginPath();
-    ctx.setLineDash(inRange ? [5, 4] : [3, 3]);
+    ctx.setLineDash(inRange ? [6, 4] : [3, 3]);
     ctx.strokeStyle = col;
-    ctx.lineWidth = inRange ? 1 : 0.8;
+    ctx.lineWidth = inRange ? 1.2 : 0.8;
     ctx.moveTo(pad.l, ye);
     ctx.lineTo(pad.l + cw, ye);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Label avec prix et distance si hors plage
-    const dist = S.price ? ((ema - S.price) / S.price * 100).toFixed(1) : null;
-    const distTxt = dist ? ` (${dist > 0 ? '+' : ''}${dist}%)` : '';
-    const labelTxt = inRange ? lbl : `${lbl} $${Math.round(ema/1000)}K${distTxt}`;
-
+    // Label pill à GAUCHE
+    const dist = S.price ? ((ema - S.price) / S.price * 100).toFixed(1) : '';
+    const distTxt = !inRange && dist ? ` ${+dist > 0 ? '+' : ''}${dist}%` : '';
+    const pillTxt = `${lbl}${distTxt}`;
+    ctx.font = '500 10px JetBrains Mono, monospace';
+    const tw = ctx.measureText(pillTxt).width;
+    const ph = 16, pw = tw + 10;
+    const px = pad.l + 4;
+    const py = ye - ph / 2;
+    // Fond pill
+    ctx.beginPath();
+    ctx.roundRect(px, py, pw, ph, 4);
+    ctx.fillStyle = col.replace('0.5)', '0.18)');
+    ctx.fill();
+    ctx.strokeStyle = colSolid;
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+    // Texte
     ctx.fillStyle = colSolid;
-    ctx.font = `${inRange ? 8 : 9}px Space Mono, monospace`;
     ctx.textAlign = 'left';
-    // Fond semi-transparent pour lisibilité si hors plage
-    if (!inRange) {
-      const tw = ctx.measureText(labelTxt).width;
-      ctx.fillStyle = 'rgba(13,13,28,0.75)';
-      ctx.fillRect(pad.l + 3, ye - 10, tw + 6, 13);
-      ctx.fillStyle = colSolid;
-    }
-    ctx.fillText(labelTxt, pad.l + 4, ye - 2);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(pillTxt, px + 5, py + ph / 2);
+    ctx.textBaseline = 'alphabetic';
   });
 
-  // ── Area fill sous la ligne de prix ──
+  // ── Area fill ──
   const isUp = closes[closes.length - 1] >= closes[0];
-  const lineColor = isUp ? '#10b981' : '#ef4444';
+  const lineColor = isUp ? '#00d084' : '#ff4d4f';
   const grad = ctx.createLinearGradient(0, pad.t, 0, priceH - pad.b);
-  grad.addColorStop(0, isUp ? 'rgba(16,185,129,0.22)' : 'rgba(239,68,68,0.22)');
+  grad.addColorStop(0, isUp ? 'rgba(0,208,132,0.2)' : 'rgba(255,77,79,0.2)');
   grad.addColorStop(1, 'rgba(0,0,0,0)');
-
   ctx.beginPath();
   ctx.moveTo(X(0), Y(closes[0]));
   for (let i = 1; i < closes.length; i++) ctx.lineTo(X(i), Y(closes[i]));
@@ -1168,8 +1271,9 @@ function renderSparkline() {
   // ── Ligne de prix ──
   ctx.beginPath();
   ctx.strokeStyle = lineColor;
-  ctx.lineWidth = 1.8;
+  ctx.lineWidth = 2;
   ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
   ctx.moveTo(X(0), Y(closes[0]));
   for (let i = 1; i < closes.length; i++) ctx.lineTo(X(i), Y(closes[i]));
   ctx.stroke();
@@ -1184,30 +1288,24 @@ function renderSparkline() {
     const barH = (priceH + gap + volH) - yTop;
     const isSpike = v >= avgVol * 1.5;
     ctx.fillStyle = isSpike
-      ? 'rgba(16,185,129,0.7)'
+      ? 'rgba(0,208,132,0.75)'
       : k.c >= k.o
-        ? 'rgba(16,185,129,0.35)'
-        : 'rgba(239,68,68,0.35)';
+        ? 'rgba(0,208,132,0.3)'
+        : 'rgba(255,77,79,0.3)';
     ctx.fillRect(x, yTop, barW, barH);
   });
 
-  // ── Séparateur prix / volume ──
+  // ── Séparateur ──
   ctx.beginPath();
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
   ctx.lineWidth = 1;
   ctx.moveTo(pad.l, priceH + gap / 2);
   ctx.lineTo(pad.l + cw, priceH + gap / 2);
   ctx.stroke();
 
-  // ── Labels prix (haut/bas) ──
-  ctx.fillStyle = 'rgba(90,90,122,0.85)';
-  ctx.font = '9px Space Mono, monospace';
-  ctx.textAlign = 'left';
-  ctx.fillText('$' + fmt(maxP), pad.l + 3, pad.t + 9);
-  ctx.fillText('$' + fmt(minP), pad.l + 3, priceH - pad.b - 2);
-
   // ── Labels dates ──
   ctx.textAlign = 'center';
+  ctx.font = '10px JetBrains Mono, monospace';
   const n = data.length - 1;
   [0, Math.round(n / 3), Math.round(2 * n / 3), n].forEach(i => {
     if (!data[i]) return;
@@ -1215,32 +1313,51 @@ function renderSparkline() {
     const lbl = S.tf === '4h'
       ? `${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}h`
       : `${d.getDate()}/${d.getMonth()+1}`;
-    ctx.fillStyle = 'rgba(90,90,122,0.7)';
+    ctx.fillStyle = 'rgba(107,107,122,0.8)';
     ctx.fillText(lbl, X(i), H - 3);
   });
 
-  // ── Point live ──
+  // ── Point live orange ──
   const lx = X(data.length - 1);
   const ly = Y(closes[closes.length - 1]);
   ctx.beginPath();
-  ctx.arc(lx, ly, 4, 0, Math.PI * 2);
-  ctx.fillStyle = '#f59e0b';
+  ctx.arc(lx, ly, 4.5, 0, Math.PI * 2);
+  ctx.fillStyle = '#f7931a';
   ctx.fill();
 
-  // ── Prix live à droite ──
-  const liveEl = $('chart-live-price');
-  if (liveEl && S.price) {
-    liveEl.textContent = '$' + fmt(S.price);
-    // Positionner verticalement en fonction du prix actuel
-    const pricePct = 1 - (Math.min(Math.max(S.price, minP), maxP) - minP) / rangeP;
-    const topPct   = (pad.t + pricePct * (priceH - pad.t - pad.b)) / H * 100;
-    liveEl.style.top = topPct + '%';
+  // ── Prix live sur l'axe droit — badge orange style TradingView ──
+  if (S.price) {
+    const priceY = Y(Math.min(Math.max(S.price, minP), maxP));
+    const liveTxt = '$' + fmt(S.price);
+    ctx.font = '600 11px JetBrains Mono, monospace';
+    const tw = ctx.measureText(liveTxt).width;
+    const px = pad.l + cw + 1;
+    const ph = 18, pw = tw + 12;
+    const py = priceY - ph / 2;
+    // Fond orange
+    ctx.beginPath();
+    ctx.roundRect(px, py, pw, ph, 3);
+    ctx.fillStyle = '#f7931a';
+    ctx.fill();
+    // Texte noir
+    ctx.fillStyle = '#000';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(liveTxt, px + 6, py + ph / 2);
+    ctx.textBaseline = 'alphabetic';
+    // Petite ligne pointillée vers le prix
+    ctx.beginPath();
+    ctx.setLineDash([2, 3]);
+    ctx.strokeStyle = 'rgba(247,147,26,0.4)';
+    ctx.lineWidth = 0.8;
+    ctx.moveTo(lx, priceY);
+    ctx.lineTo(px, priceY);
+    ctx.stroke();
+    ctx.setLineDash([]);
   }
 
-  // ── Badges historique d'analyses ──
+  // Badges historique
   const badges = drawHistoryBadges(ctx, data, X, Y, priceH, pad, minP, maxP);
-
-  // Sauvegarder l'état pour le tooltip + badges cliquables
   chartState = { data, W, pad, priceH, volH, gap, H, X, Y, YV, vols, closes, minP, maxP, rangeP, maxV, avgVol, dpr, badges };
 }
 
@@ -1735,7 +1852,7 @@ function renderHistory(hist, activeId) {
       <span class="hist-time">${e.ts}</span>
       <span class="hist-price">$${e.price ? e.price.toLocaleString('fr-FR', {maximumFractionDigits:0}) : '—'}</span>
       <span class="hist-rsi" style="color:${rsiColor(e.rsi)}">RSI ${e.rsi ? e.rsi.toFixed(1) : '—'}</span>
-      ${e.fg != null ? `<span style="font-size:9px;color:var(--muted);font-family:var(--mono);">F&G ${e.fg}</span>` : ''}
+      <span class="hist-fg">F&G ${e.fg != null ? e.fg : '—'}</span>
     </div>`).join('');
 }
 
